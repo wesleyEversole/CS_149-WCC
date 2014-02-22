@@ -10,12 +10,14 @@ import java.util.ArrayList;
  */
 public class HPF implements QueInterface {
 	private ArrayList<RR> listOfRR;
+	private boolean mode;
 
 	// Highest Priority First
-	public HPF() {
+	public HPF(boolean m) {
 		   for (int i=1; i<5;i++) {
 		      listOfRR.add(new RR());
 		   }
+		   mode=m;
 		}
 	/*
 	 * (non-Javadoc)
@@ -75,6 +77,14 @@ public class HPF implements QueInterface {
 	public int throughput() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	/* (non-Javadoc)
+	 * @see QueInterface#isPreemptive()
+	 */
+	@Override
+	public boolean isPreemptive() {
+		// TODO Auto-generated method stub
+		return mode;
 	}
 
 }

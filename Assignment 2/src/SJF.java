@@ -65,4 +65,10 @@ public class SJF implements QueInterface {
 		return 0;
 	}
 
+	@Override
+	public boolean isPreemptive() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

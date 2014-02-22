@@ -38,9 +38,7 @@ public class RR implements QueInterface {
 	 */
 	@Override
 	public float next(float qunata) {
-		if(qunata==100){
-			return 1;
-		}
+		//do things
 		return 1;
 	}
 
@@ -77,6 +75,12 @@ public class RR implements QueInterface {
 	public int throughput() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public boolean isPreemptive() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

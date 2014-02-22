@@ -42,4 +42,13 @@ public class HPF_preemptive implements QueInterface {
 		return 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see QueInterface#isPreemptive()
+	 */
+	@Override
+	public boolean isPreemptive() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
