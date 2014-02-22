@@ -34,9 +34,9 @@ public class HPF implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public Process next() {
+	public float next(float quanta) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	/*
@@ -46,8 +46,35 @@ public class HPF implements QueInterface {
 	 */
 	@Override
 	public boolean isEmpty() {
+		if(listOfRR.isEmpty()){
+			return listOfRR.isEmpty();
+		}
+		for(RR rr:listOfRR){
+			if(!rr.isEmpty()){
+				return false;
+			}
+		}
+		return true;
+	}
+	@Override
+	public float turnAround() {
 		// TODO Auto-generated method stub
-		return false;
+		return 0;
+	}
+	@Override
+	public float waitTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public float responseTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public int throughput() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+
+
 /**
  * 
  */
@@ -7,6 +10,15 @@
  * 
  */
 public class RR implements QueInterface {
+	private ArrayList<Process> processQue; 
+	public RR() {
+		processQue = new ArrayList<>(); ;
+	}
+
+	/**
+	 * @param runningQueue
+	 */
+
 	// Round Robin
 	/*
 	 * (non-Javadoc)
@@ -15,7 +27,7 @@ public class RR implements QueInterface {
 	 */
 	@Override
 	public void add(Process p) {
-		// TODO Auto-generated method stub
+		processQue.add(p);
 
 	}
 
@@ -25,9 +37,11 @@ public class RR implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public Process next() {
-		// TODO Auto-generated method stub
-		return null;
+	public float next(float qunata) {
+		if(qunata==100){
+			return 1;
+		}
+		return 1;
 	}
 
 	/*
@@ -37,8 +51,32 @@ public class RR implements QueInterface {
 	 */
 	@Override
 	public boolean isEmpty() {
+		
+		return processQue.isEmpty();
+	}
+
+	@Override
+	public float turnAround() {
 		// TODO Auto-generated method stub
-		return false;
+		return 0;
+	}
+
+	@Override
+	public float waitTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float responseTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int throughput() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

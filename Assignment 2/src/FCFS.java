@@ -25,9 +25,9 @@ public class FCFS implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public Process next() {
+	public float next(float quanta) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	/*
@@ -39,6 +39,30 @@ public class FCFS implements QueInterface {
 	public boolean isEmpty() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public float turnAround() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float waitTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float responseTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int throughput() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
