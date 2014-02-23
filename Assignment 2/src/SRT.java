@@ -46,12 +46,9 @@ public class SRT extends BaseQue implements QueInterface {
 		}
 		Process p = processQue.get(index);
 		p.run(quanta);
-		if (p.getRunningT()>0.0f) {
-			processQue.add(p);
-		} else {
-			closeProcess(p);
-			processQue.remove(index);
-		}
+		closeProcess(p);
+		processQue.remove(index);
+		
 	}
 
 
@@ -73,4 +70,3 @@ public class SRT extends BaseQue implements QueInterface {
 
 
 }
-
