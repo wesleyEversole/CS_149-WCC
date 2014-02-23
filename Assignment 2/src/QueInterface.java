@@ -11,15 +11,7 @@ public interface QueInterface {
 
 	public void add(Process p);
 	
-	public void next();
+	public void next(float quanta);
 
 	public boolean isEmpty();
-
-	public float turnAround();
-
-	public float waitTime();
-
-	public float responseTime();
-
-	public int throughput();
 }

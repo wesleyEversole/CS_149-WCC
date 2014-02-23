@@ -16,6 +16,26 @@ public class Process {
 	private float xrun;
 	// the running time should be used in the extra credit
 	public float runningT;
+	public float waitTime;
+	private float lastQuanta;
+	private int pid;
+
+	public void setProcessID(int pid) {
+		this.pid = pid;
+	}
+	/**
+	 * @return the waitTime
+	 */
+	public float getWaitTime() {
+		return waitTime;
+	}
+
+	/**
+	 * @param waitTime the waitTime to set
+	 */
+	public void setWaitTime(float waitTime) {
+		this.waitTime = waitTime;
+	}
 
 	/**
 	 * @param priority
@@ -28,6 +48,14 @@ public class Process {
 		arrival = arrivalMaker();
 		xrun = xrunMaker();
 		runningT = xrun;
+		lastQuanta = 0.0f;
+	}
+
+	/**
+	 * @param quanta the lastQuanta to set
+	 */
+	public void setLastQuanta(float quanta) {
+		this.lastQuanta = quanta;
 	}
 
 	public int getPriority() {
@@ -77,6 +105,28 @@ public class Process {
 		// might want to make it unable to use the same number more then once
 		return 0;
 
+	}
+	
+	public void run(float quanta) {
+		// handle wait time accumulation
+		waitTime += quanta - lastQuanta -1;
+		lastQuanta = quanta;
+		System.out.println(this);
+	}
+
+	public float getResponseTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public float getTurnAroundTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String toString() {
+		return "P"+pid;
 	}
 
 }

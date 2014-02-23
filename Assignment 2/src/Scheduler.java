@@ -11,13 +11,12 @@ import java.util.ArrayList;
 public class Scheduler {
 
 	private float currentTime;
+	private int pid;
 	private ArrayList<Process> scheduleList;
-	private boolean canSchedule;
-    private double maxTimeToInterrupt;
+
 	public Scheduler() {
-		maxTimeToInterrupt = 5.0;
 		currentTime = 0;
-		canSchedule = true;
+		pid = 0;
 		scheduleList = new ArrayList<>();
 	}
 
@@ -32,22 +31,25 @@ public class Scheduler {
 			// add items to run queue as time evolves
 			while (!scheduleList.isEmpty()) {
 				if (scheduleList.get(0).getArrival()<=currentTime)   {
-					q.add(scheduleList.remove(0));
+					Process p = scheduleList.remove(0);
+					p.setProcessID(pid++);
+					p.setLastQuanta(currentTime);
+					q.add(p);
 				} else {
 					break;
 				}
 			}
 			if (currentTime != 100.0f) {
-			   q.next();
+			   q.next(currentTime);
 			} 				
 			currentTime += 1.0f;
 
             moreToDo = !q.isEmpty();
 		}
+		displayRunStatistics();
 	}
-
-	private boolean isDone() {
-		return false;
+	
+	private void displayRunStatistics() {
+		
 	}
-
 }

@@ -25,7 +25,7 @@ public class SRT implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public void next() {
+	public void next(float quanta) {
 		// TODO Auto-generated method stub
 	}
 
@@ -39,31 +39,6 @@ public class SRT implements QueInterface {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public float turnAround() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float waitTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float responseTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int throughput() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	@Override
 	public boolean isPreemptive() {
 		// TODO Auto-generated method stub

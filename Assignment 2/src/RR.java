@@ -8,12 +8,11 @@ import java.util.ArrayList;
  * @author wesley
  * 
  */
-public class RR implements QueInterface {
+public class RR extends BaseQue implements QueInterface {
 	private ArrayList<Process> processQue;
 
 	public RR() {
 		processQue = new ArrayList<>();
-		;
 	}
 
 	/**
@@ -29,7 +28,6 @@ public class RR implements QueInterface {
 	@Override
 	public void add(Process p) {
 		processQue.add(p);
-
 	}
 
 	/*
@@ -38,14 +36,15 @@ public class RR implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public void next() {
+	public void next(float quanta) {
 		// do things
 		Process p = processQue.remove(0);
-		if (p.getRunningT()<=1.0f) {
-			p.setRunningT(0.0f);
-		} else {
-			p.setRunningT(p.getRunningT()-1.0f);
+		p.run(quanta);
+		if (p.getRunningT()>0.0f) {
+			// return to queue we did not finish in the quanta
 			processQue.add(p);
+		} else {
+			closeProcess(p);
 		}
 	}
 
@@ -58,30 +57,6 @@ public class RR implements QueInterface {
 	public boolean isEmpty() {
 
 		return processQue.isEmpty();
-	}
-
-	@Override
-	public float turnAround() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float waitTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float responseTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int throughput() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override

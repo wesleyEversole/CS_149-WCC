@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author wesley
  * 
  */
-public class HPF implements QueInterface {
+public class HPF extends BaseQue implements QueInterface {
 	private ArrayList<QueInterface> listOfQueues;
 	private boolean mode;
 
@@ -45,14 +45,13 @@ public class HPF implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public void next() {
-		// TODO Auto-generated method stub
+	public void next(float quanta) {
 		if (isEmpty()) {
 			return;
 		}
 		for (int priority = 0; priority < 4; priority++) {
 			if (!listOfQueues.get(priority).isEmpty()) {
-				listOfQueues.get(priority).next();
+				listOfQueues.get(priority).next(quanta);
 				break;
 			}
 		}
@@ -75,31 +74,6 @@ public class HPF implements QueInterface {
 		}
 		return true;
 	}
-
-	@Override
-	public float turnAround() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float waitTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float responseTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int throughput() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
