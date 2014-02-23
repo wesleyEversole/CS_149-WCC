@@ -6,7 +6,7 @@
  * @author wesley
  * 
  */
-public class SRT implements QueInterface {
+public class SRT extends BaseQue implements QueInterface {
 	// Shortest Remaining Time
 	/*
 	 * (non-Javadoc)
