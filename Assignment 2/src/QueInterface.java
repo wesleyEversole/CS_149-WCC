@@ -8,9 +8,10 @@
  */
 public interface QueInterface {
 	public boolean isPreemptive();
-	public void add(Process p);
 
-	public float next(float quanta);
+	public void add(Process p);
+	
+	public void next();
 
 	public boolean isEmpty();
 

@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 
-
 /**
  * 
  */
@@ -10,9 +9,11 @@ import java.util.ArrayList;
  * 
  */
 public class RR implements QueInterface {
-	private ArrayList<Process> processQue; 
+	private ArrayList<Process> processQue;
+
 	public RR() {
-		processQue = new ArrayList<>(); ;
+		processQue = new ArrayList<>();
+		;
 	}
 
 	/**
@@ -37,9 +38,15 @@ public class RR implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public float next(float qunata) {
-		//do things
-		return 1;
+	public void next() {
+		// do things
+		Process p = processQue.remove(0);
+		if (p.getRunningT()<=1.0f) {
+			p.setRunningT(0.0f);
+		} else {
+			p.setRunningT(p.getRunningT()-1.0f);
+			processQue.add(p);
+		}
 	}
 
 	/*
@@ -49,7 +56,7 @@ public class RR implements QueInterface {
 	 */
 	@Override
 	public boolean isEmpty() {
-		
+
 		return processQue.isEmpty();
 	}
 

@@ -21,9 +21,8 @@ public class FCFS implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public float next(float quanta) {
+	public void next() {
 		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	/*
@@ -61,7 +60,9 @@ public class FCFS implements QueInterface {
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see QueInterface#isPreemptive()
 	 */
 	@Override

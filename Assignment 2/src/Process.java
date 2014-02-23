@@ -27,6 +27,7 @@ public class Process {
 		priority = priorityMaker();
 		arrival = arrivalMaker();
 		xrun = xrunMaker();
+		runningT = xrun;
 	}
 
 	public int getPriority() {
@@ -57,7 +58,7 @@ public class Process {
 		return runningT;
 	}
 
-	private void setRunningT(float runningT) {
+	public void setRunningT(float runningT) {
 		this.runningT = runningT;
 	}
 

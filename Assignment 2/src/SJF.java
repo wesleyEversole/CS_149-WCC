@@ -25,9 +25,8 @@ public class SJF implements QueInterface {
 	 * @see SchedulingQue#next()
 	 */
 	@Override
-	public float next(float quanta) {
+	public void next() {
 		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	/*
