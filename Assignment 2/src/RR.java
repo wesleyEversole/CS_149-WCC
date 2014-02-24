@@ -12,6 +12,7 @@ public class RR extends BaseQue implements QueInterface {
 	private ArrayList<Process> processQue;
 
 	public RR() {
+		super();
 		processQue = new ArrayList<>();
 	}
 

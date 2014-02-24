@@ -33,7 +33,7 @@ public class BaseQue {
 		totalTurnAroundTime = 0.0f;
 	}
 
-	protected void closeProcess(Process process) {
+	public void closeProcess(Process process) {
 		totalWait += process.getWaitTime();
 		totalResponseTime += process.getResponseTime();
 		totalTurnAroundTime += process.getTurnAroundTime();

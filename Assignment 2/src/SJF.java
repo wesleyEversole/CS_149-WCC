@@ -6,7 +6,7 @@
  * @author wesley
  * 
  */
-public class SJF implements QueInterface {
+public class SJF extends BaseQue implements QueInterface {
 	// Shortest Job First
 	/*
 	 * (non-Javadoc)

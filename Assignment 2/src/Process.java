@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * 
  */
@@ -91,19 +93,18 @@ public class Process {
 	}
 
 	private float xrunMaker() {
-		// should return random float from 0.1-10
-		return 0;
+		return (float)(Math.random()*10.0);
 	}
 
 	private int priorityMaker() {
 		// will make a random priority from 1-4
-		return 0;
+		return (int) (Math.floor((Math.random()*4.0)+1.0));
 	}
 
 	private float arrivalMaker() {
 		// need code to get a random float from 0 to 99
 		// might want to make it unable to use the same number more then once
-		return 0;
+		return (float)(Math.random()*99.0);
 
 	}
 	
@@ -111,7 +112,7 @@ public class Process {
 		// handle wait time accumulation
 		waitTime += quanta - lastQuanta -1;
 		lastQuanta = quanta;
-		System.out.println(this);
+		System.out.print(this);
 	}
 
 	public float getResponseTime() {
