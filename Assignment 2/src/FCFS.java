@@ -6,6 +6,11 @@ import java.util.ArrayList;
  */
 public class FCFS extends BaseQue implements QueInterface {
 	private ArrayList<Process> processQue;
+	
+	public FCFS() {
+		super();
+		processQue = new ArrayList<>();
+	}
 	// First Come First Served
 	/*
 	 * (non-Javadoc)
@@ -14,8 +19,7 @@ public class FCFS extends BaseQue implements QueInterface {
 	 */
 	@Override
 	public void add(Process p) {
-		// TODO Auto-generated method stub
-
+		processQue.add(p);
 	}
 
 	/*
@@ -25,7 +29,17 @@ public class FCFS extends BaseQue implements QueInterface {
 	 */
 	@Override
 	public void next(float quanta) {
-		// TODO Auto-generated method stub
+		if (processQue.size()==0) {
+			System.out.print("[  ] ");
+			return;
+		}
+		Process p = processQue.get(0);
+		p.run(quanta);
+		if (p.getRunningT()>0.0f) {
+		} else {
+			closeProcess(p);
+			processQue.remove(0);
+		} 
 	}
 
 	/*
@@ -35,8 +49,7 @@ public class FCFS extends BaseQue implements QueInterface {
 	 */
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return  processQue.isEmpty();
 	}
 
 	/*

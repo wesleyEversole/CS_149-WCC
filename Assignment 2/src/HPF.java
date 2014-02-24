@@ -14,6 +14,7 @@ public class HPF extends BaseQue implements QueInterface {
 
 	// Highest Priority First
 	public HPF(boolean m) {
+		listOfQueues = new ArrayList<>();
 		for (int i = 1; i < 5; i++) {
 			if (m) {
 				listOfQueues.add(new RR());
@@ -39,6 +40,13 @@ public class HPF extends BaseQue implements QueInterface {
 		}
 	}
 
+	public QueInterface getQue(int i) {
+		if (i>0 && i<5) {
+			return listOfQueues.get(i-1);
+		} else {
+			return this;
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -93,5 +101,46 @@ public class HPF extends BaseQue implements QueInterface {
 				q.shutdown();
 			}
 		}
+	}
+
+	public float averageTurnAround() {
+		QueInterface qi;
+		totalTurnAroundTime = 0.0f;
+		for(int i=0; i<4;i++) {
+			qi=listOfQueues.get(0);
+			totalTurnAroundTime += qi.averageTurnAround()*qi.throughput();
+		}
+		return totalTurnAroundTime / throughput();
+	}
+
+	public float averageWaitTime() {
+		QueInterface qi;
+		totalWait = 0.0f;
+		for(int i=0; i<4;i++) {
+			qi=listOfQueues.get(0);
+			totalWait += qi.averageWaitTime()*qi.throughput();
+		}
+		return totalWait / throughput();
+	}
+
+	public float averageResponseTime() {
+		QueInterface qi;
+		totalResponseTime = 0.0f;
+		for(int i=0; i<4;i++) {
+			qi=listOfQueues.get(0);
+			totalResponseTime += qi.averageResponseTime()*qi.throughput();
+		}
+		return totalResponseTime / throughput();
+	}
+
+	public int throughput() {
+		if (completedProcesses==0) {
+			QueInterface qi;
+			for(int i=0; i<4;i++) {
+				qi=listOfQueues.get(0);
+				completedProcesses += qi.throughput();
+			}
+		}
+		return completedProcesses;
 	}
 }

@@ -14,19 +14,20 @@ public class Process {
 	// arrival should be the time at which the program is to arrive. will be
 	// used in sorting
 	private float arrival;
-	private float actualArrival=Float.NaN;
+	private float actualArrival = Float.NaN;
 	// xrun is the expected total run time.
 	private float xrun;
 	// the running time should be used in the extra credit
 	public float runningT;
 	public float waitTime;
-	public float firstRun=Float.NaN;
+	public float firstRun = Float.NaN;
 	private float lastQuanta;
 	private int pid;
 
 	public void setProcessID(int pid) {
 		this.pid = pid;
 	}
+
 	/**
 	 * @return the waitTime
 	 */
@@ -35,7 +36,8 @@ public class Process {
 	}
 
 	/**
-	 * @param waitTime the waitTime to set
+	 * @param waitTime
+	 *            the waitTime to set
 	 */
 	public void setWaitTime(float waitTime) {
 		this.waitTime = waitTime;
@@ -54,12 +56,14 @@ public class Process {
 		runningT = xrun;
 		lastQuanta = 0.0f;
 	}
+
 	private float round10th(float f) {
-		return (float) (Math.rint(f*10.0f)/10.0f);
+		return (float) (Math.rint(f * 10.0f) / 10.0f);
 	};
 
 	/**
-	 * @param quanta the lastQuanta to set
+	 * @param quanta
+	 *            the lastQuanta to set
 	 */
 	public void setLastQuanta(float quanta) {
 		this.lastQuanta = quanta;
@@ -84,6 +88,7 @@ public class Process {
 	public void setActualArrival(float arrival) {
 		this.actualArrival = arrival;
 	}
+
 	public float getXrun() {
 		return xrun;
 	}
@@ -101,28 +106,31 @@ public class Process {
 	}
 
 	private float xrunMaker() {
-		return (float)(Math.random()*10.0);
+		return (float) (Math.random() * 10.0);
 	}
 
 	private int priorityMaker() {
 		// will make a random priority from 1-4
-		return (int) (Math.floor((Math.random()*4.0)+1.0));
+		return (int) (Math.floor((Math.random() * 4.0) + 1.0));
 	}
 
 	private float arrivalMaker() {
 		// need code to get a random float from 0 to 99
 		// might want to make it unable to use the same number more then once
-		return (float)(Math.random()*99.0);
+		return (float) (Math.random() * 99.0);
 
 	}
-	
+
 	public boolean isActive() {
-		return(Float.isNaN(firstRun));
+		return (!Float.isNaN(firstRun));
 	}
-	
+
 	public void run(float quanta) {
 		// handle wait time accumulation
-		waitTime += quanta - lastQuanta -1;
+		waitTime += quanta - lastQuanta;
+		if (waitTime >= 0) {
+			--waitTime;
+		}
 		lastQuanta = quanta;
 		runningT -= 1.0f;
 		if (Float.isNaN(firstRun)) {
@@ -133,17 +141,17 @@ public class Process {
 
 	public float getResponseTime() {
 		// TODO Auto-generated method stub
-		return firstRun-actualArrival;
+		return firstRun - actualArrival;
 	}
 
 	public float getTurnAroundTime() {
 		// TODO Auto-generated method stub
-		return lastQuanta-actualArrival;
+		return lastQuanta - actualArrival;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("P%3d ",pid);
+		return String.format("P%3d ", pid);
 	}
 
 }

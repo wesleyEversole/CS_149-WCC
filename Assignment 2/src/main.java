@@ -24,25 +24,33 @@ public class main {
 		//run(SJF.class);
 
 		// SRT
-		run(SRT.class);
+		//run(SRT.class);
 
 		// RR
 
 		run(RR.class);
 
 		// HPF nonpreemp
+		//run(HPFnonpreempt.class);
 
 		// HPF preemp
+		//run(HPFpreempt.class);
 
 	}
 
 	public static void run(Class c) {
 		QueInterface q = null;
-		float turnAroundTime=0.0f;
-		float waitingTime=0.0f;
-		float responseTime=0.0f;
-		int throughput=0;
-		int n = 5;
+		float[] turnAroundTime={0.0f,0.0f,0.0f,0.0f,0.0f};
+		float[] waitingTime={0.0f,0.0f,0.0f,0.0f,0.0f};
+		float[] responseTime={0.0f,0.0f,0.0f,0.0f,0.0f};
+		int[] throughput={0,0,0,0,0};
+		int n = 5;		
+		boolean multiQue= false;
+		
+		//if (q.getClass().getName().substring(0, 3).equals("HPF")) {
+		//	multiQue = true;
+		//} 
+		
 		System.out.println("===================================================");
 		System.out.println("Running "+c.getName());
 		
@@ -63,17 +71,18 @@ public class main {
 				s.add(new Process());
 			}
 			s.exec(q);
-			turnAroundTime += s.averageTurnAround();
-			waitingTime += s.averageWaitTime();
-			responseTime += s.averageResponseTime();
-			throughput += s.throughput();
+			turnAroundTime[0] += s.averageTurnAround(0);
+			waitingTime[0] += s.averageWaitTime(0);
+			responseTime[0] += s.averageResponseTime(0);
+			throughput[0] += s.throughput(0);
 		}
+
 		System.out.println();
 		System.out.println("Averages for "+n+" runs of "+c.getName());
-		System.out.println("Average turnaround time:"+turnAroundTime/n);
-		System.out.println("   Average waiting time:"+waitingTime/n);
-		System.out.println("  Average response time:"+responseTime/n);
-		System.out.println("             Throughput:"+throughput/n);
+		System.out.println("Average turnaround time:"+turnAroundTime[0]/n);
+		System.out.println("   Average waiting time:"+waitingTime[0]/n);
+		System.out.println("  Average response time:"+responseTime[0]/n);
+		System.out.println("             Throughput:"+throughput[0]/n);
 
 	}
 }

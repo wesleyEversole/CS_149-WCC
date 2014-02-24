@@ -10,6 +10,10 @@ import java.util.ArrayList;
  */
 public class SJF extends BaseQue implements QueInterface {
 	private ArrayList<Process> processQue;
+	public SJF() {
+		super();
+		processQue = new ArrayList<>();
+	}
 	// Shortest Job First
 	/*
 	 * (non-Javadoc)
@@ -29,6 +33,10 @@ public class SJF extends BaseQue implements QueInterface {
 	 */
 	@Override
 	public void next(float quanta) {
+		if (processQue.size()==0) {
+			System.out.print("[  ] ");
+			return;
+		}
 		// TODO Auto-generated method stub
 	}
 
