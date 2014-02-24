@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * 
@@ -23,20 +24,30 @@ public class Scheduler {
 	}
 
 	public void add(Process p) {
+		p.setProcessID(pid++);
 		scheduleList.add(p);
+		System.out.print("Process: "+p+" Arrival time: "+p.getArrival());
+		System.out.print(" Expected runtime: "+p.getRunningT());
+		System.out.print(" Priority:"+p.getPriority());
+		System.out.println();
 	}
 	
 	public void exec(QueInterface q) {
 		boolean moreToDo = true;
 		myQ = q;
+		java.util.Collections.sort(scheduleList, new Comparator<Process>() {
+		    public int compare(Process obj1, Process obj2) {
+		        return (int) (obj1.getArrival()-obj2.getArrival());
+		    }
+		});
 		while (moreToDo)  {
 			// add items to run queue as time evolves
 			while (!scheduleList.isEmpty()) {
 
 				if (scheduleList.get(0).getArrival()<=currentTime)   {
 					Process p = scheduleList.remove(0);
-					p.setProcessID(pid++);
 					p.setLastQuanta(currentTime);
+					p.setActualArrival(currentTime);
 					q.add(p);
 				} else {
 					break;
@@ -44,15 +55,20 @@ public class Scheduler {
 			}
 			if (currentTime%10 == 0) {
 				System.out.println();
-				System.out.print(currentTime+" |");
+				System.out.print(String.format("%3.0f |",currentTime));
 			}
 			if (currentTime != 100.0f) {
 			   q.next(currentTime);
-			} 				
+			} else {
+				q.shutdown();
+			}
 			currentTime += 1.0f;
 
-            moreToDo = !q.isEmpty() && currentTime<1000.00f;
+            moreToDo = !q.isEmpty() || currentTime<100.00f;
+            // debug only
+            //if (currentTime>200) break;
 		}
+		System.out.println();
 		displayRunStatistics();
 	}
 	
@@ -72,6 +88,9 @@ public class Scheduler {
 	}
 	
 	private void displayRunStatistics() {
-		
+		System.out.println("Average turnaround time:"+averageTurnAround());
+		System.out.println("   Average waiting time:"+averageWaitTime());
+		System.out.println("  Average response time:"+averageResponseTime());
+		System.out.println("             Throughput:"+throughput());
 	}
 }

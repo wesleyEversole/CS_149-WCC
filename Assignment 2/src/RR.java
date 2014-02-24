@@ -39,6 +39,10 @@ public class RR extends BaseQue implements QueInterface {
 	@Override
 	public void next(float quanta) {
 		// do things
+		if (processQue.size()==0) {
+			System.out.print("[  ] ");
+			return;
+		}
 		Process p = processQue.remove(0);
 		p.run(quanta);
 		if (p.getRunningT()>0.0f) {
@@ -66,4 +70,16 @@ public class RR extends BaseQue implements QueInterface {
 		return true;
 	}
 
+	@Override
+	public void shutdown() {
+		// remove any process that is not active
+		int i=0;
+		while(i < processQue.size()) {
+			if (processQue.get(i).isActive()){
+				i++;
+			} else {
+				processQue.remove(i);
+			}
+		}
+	}
 }

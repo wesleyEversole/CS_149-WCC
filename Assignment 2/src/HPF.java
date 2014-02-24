@@ -74,6 +74,7 @@ public class HPF extends BaseQue implements QueInterface {
 		}
 		return true;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -83,5 +84,14 @@ public class HPF extends BaseQue implements QueInterface {
 	public boolean isPreemptive() {
 		// TODO Auto-generated method stub
 		return mode;
+	}
+
+	@Override
+	public void shutdown() {
+		if (!listOfQueues.isEmpty()) {
+			for (QueInterface q : listOfQueues) {
+				q.shutdown();
+			}
+		}
 	}
 }

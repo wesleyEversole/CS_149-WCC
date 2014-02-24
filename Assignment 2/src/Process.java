@@ -14,11 +14,13 @@ public class Process {
 	// arrival should be the time at which the program is to arrive. will be
 	// used in sorting
 	private float arrival;
+	private float actualArrival=Float.NaN;
 	// xrun is the expected total run time.
 	private float xrun;
 	// the running time should be used in the extra credit
 	public float runningT;
 	public float waitTime;
+	public float firstRun=Float.NaN;
 	private float lastQuanta;
 	private int pid;
 
@@ -47,11 +49,14 @@ public class Process {
 	public Process() {
 		// just generated code for now.
 		priority = priorityMaker();
-		arrival = arrivalMaker();
-		xrun = xrunMaker();
+		arrival = round10th(arrivalMaker());
+		xrun = round10th(xrunMaker());
 		runningT = xrun;
 		lastQuanta = 0.0f;
 	}
+	private float round10th(float f) {
+		return (float) (Math.rint(f*10.0f)/10.0f);
+	};
 
 	/**
 	 * @param quanta the lastQuanta to set
@@ -76,6 +81,9 @@ public class Process {
 		this.arrival = arrival;
 	}
 
+	public void setActualArrival(float arrival) {
+		this.actualArrival = arrival;
+	}
 	public float getXrun() {
 		return xrun;
 	}
@@ -108,26 +116,34 @@ public class Process {
 
 	}
 	
+	public boolean isActive() {
+		return(Float.isNaN(firstRun));
+	}
+	
 	public void run(float quanta) {
 		// handle wait time accumulation
 		waitTime += quanta - lastQuanta -1;
 		lastQuanta = quanta;
+		runningT -= 1.0f;
+		if (Float.isNaN(firstRun)) {
+			firstRun = quanta;
+		}
 		System.out.print(this);
 	}
 
 	public float getResponseTime() {
 		// TODO Auto-generated method stub
-		return 0;
+		return firstRun-actualArrival;
 	}
 
 	public float getTurnAroundTime() {
 		// TODO Auto-generated method stub
-		return 0;
+		return lastQuanta-actualArrival;
 	}
 
 	@Override
 	public String toString() {
-		return "P"+pid;
+		return String.format("P%3d ",pid);
 	}
 
 }

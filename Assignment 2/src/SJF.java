@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * 
  */
@@ -7,6 +9,7 @@
  * 
  */
 public class SJF extends BaseQue implements QueInterface {
+	private ArrayList<Process> processQue;
 	// Shortest Job First
 	/*
 	 * (non-Javadoc)
@@ -46,4 +49,16 @@ public class SJF extends BaseQue implements QueInterface {
 		return false;
 	}
 
+	@Override
+	public void shutdown() {
+		// remove any process that is not active
+		int i=0;
+		while(i < processQue.size()) {
+			if (processQue.get(i).isActive()){
+				i++;
+			} else {
+				processQue.remove(i);
+			}
+		}
+	}
 }

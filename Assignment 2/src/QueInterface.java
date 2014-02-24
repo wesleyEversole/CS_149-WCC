@@ -14,6 +14,11 @@ public interface QueInterface {
 	public void next(float quanta);
 
 	public boolean isEmpty();
+	
+	/**
+	 * remove any jobs that have not started.
+	 */
+	public void shutdown();
 
 	public void closeProcess(Process process);
 	public float averageTurnAround(); 

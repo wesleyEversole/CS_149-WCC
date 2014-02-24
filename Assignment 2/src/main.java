@@ -18,10 +18,10 @@ public class main {
 		// algorithm is going to be used.
 
 		// FCFS
-		run(FCFS.class);
+		//run(FCFS.class);
 
 		// SJF
-		run(SJF.class);
+		//run(SJF.class);
 
 		// SRT
 		run(SRT.class);
@@ -43,7 +43,9 @@ public class main {
 		float responseTime=0.0f;
 		int throughput=0;
 		int n = 5;
-
+		System.out.println("===================================================");
+		System.out.println("Running "+c.getName());
+		
 		for (int i = 0; i < n; i++) {
 			// run each scheduler n times
 			try {
@@ -57,7 +59,7 @@ public class main {
 			}
 			
 			Scheduler s = new Scheduler();
-			for (int process = 0; process < 5; process++) {
+			for (int process = 0; process < 300; process++) {
 				s.add(new Process());
 			}
 			s.exec(q);
@@ -66,7 +68,7 @@ public class main {
 			responseTime += s.averageResponseTime();
 			throughput += s.throughput();
 		}
-		
+		System.out.println();
 		System.out.println("Averages for "+n+" runs of "+c.getName());
 		System.out.println("Average turnaround time:"+turnAroundTime/n);
 		System.out.println("   Average waiting time:"+waitingTime/n);
