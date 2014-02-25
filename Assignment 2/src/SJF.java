@@ -41,7 +41,7 @@ public class SJF extends BaseQue implements QueInterface {
 			return;
 		}
 		Process p = processQue.get(index);
-		
+		p.run(quanta);
 			for(Process i : processQue){
 				float xrun = i.getXrun();
 				if(xrun < p.getXrun()){
@@ -50,7 +50,7 @@ public class SJF extends BaseQue implements QueInterface {
 				}
 			}
 			
-			p.run(quanta);			
+						
 		if (p.getRunningT()>0.0f) {
 			// return to queue we did not finish in the quanta
 			processQue.add(p);
