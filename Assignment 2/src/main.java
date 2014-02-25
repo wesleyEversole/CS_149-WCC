@@ -21,7 +21,7 @@ public class main {
 		//run(FCFS.class);
 
 		// SJF
-		run(SJF.class);
+		//run(SJF.class);
 
 		// SRT
 		//run(SRT.class);
@@ -71,9 +71,7 @@ public class main {
 			}
 			
 			Scheduler s = new Scheduler();
-
-			for (int process = 0; process < 100; process++) {
-
+			for (int process = 0; process < 300; process++) {
 				s.add(new Process());
 			}
 			s.exec(q);
