@@ -10,9 +10,11 @@ import java.util.ArrayList;
  */
 public class SJF extends BaseQue implements QueInterface {
 	private ArrayList<Process> processQue;
+	private int index;
 	public SJF() {
 		super();
-		processQue = new ArrayList<>();
+		index = 0;
+		processQue = new ArrayList<Process>();
 	}
 	// Shortest Job First
 	/*
@@ -23,6 +25,7 @@ public class SJF extends BaseQue implements QueInterface {
 	@Override
 	public void add(Process p) {
 		// TODO Auto-generated method stub
+		processQue.add(p);
 
 	}
 
@@ -37,7 +40,26 @@ public class SJF extends BaseQue implements QueInterface {
 			System.out.print("[  ] ");
 			return;
 		}
-		// TODO Auto-generated method stub
+		Process p = processQue.get(index);
+		
+			for(Process i : processQue){
+				float xrun = i.getXrun();
+				if(xrun < p.getXrun()){
+					index = processQue.indexOf(i);	
+					p = processQue.get(index);
+				}
+			}
+			
+			p.run(quanta);			
+		if (p.getRunningT()>0.0f) {
+			// return to queue we did not finish in the quanta
+			processQue.add(p);
+		} else {
+			closeProcess(p);
+			processQue.remove(index);
+		}  
+		
+		
 	}
 
 	/*
@@ -48,13 +70,13 @@ public class SJF extends BaseQue implements QueInterface {
 	@Override
 	public boolean isEmpty() {
 		// TODO Auto-generated method stub
-		return false;
+		return processQue.isEmpty();
 	}
 
 	@Override
 	public boolean isPreemptive() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

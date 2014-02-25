@@ -10,7 +10,7 @@ public class SRT extends BaseQue implements QueInterface {
 	private ArrayList<Process> processQue;
 	
 	public SRT(){
-		processQue = new ArrayList<>();
+		processQue = new ArrayList<Process>();
 	}
 	
 	/*

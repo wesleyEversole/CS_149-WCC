@@ -19,7 +19,7 @@ public class Scheduler {
 	public Scheduler() {
 		currentTime = 0;
 		pid = 0;
-		scheduleList = new ArrayList<>();
+		scheduleList = new ArrayList<Process>();
 		myQ = null;
 	}
 

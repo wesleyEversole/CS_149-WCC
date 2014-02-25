@@ -21,14 +21,14 @@ public class main {
 		//run(FCFS.class);
 
 		// SJF
-		//run(SJF.class);
+		run(SJF.class);
 
 		// SRT
 		//run(SRT.class);
 
 		// RR
 
-		run(RR.class);
+		//run(RR.class);
 
 		// HPF nonpreemp
 		//run(HPFnonpreempt.class);
@@ -67,7 +67,7 @@ public class main {
 			}
 			
 			Scheduler s = new Scheduler();
-			for (int process = 0; process < 300; process++) {
+			for (int process = 0; process < 30; process++) {
 				s.add(new Process());
 			}
 			s.exec(q);

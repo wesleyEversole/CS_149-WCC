@@ -14,7 +14,7 @@ public class HPF extends BaseQue implements QueInterface {
 
 	// Highest Priority First
 	public HPF(boolean m) {
-		listOfQueues = new ArrayList<>();
+		listOfQueues = new ArrayList<QueInterface>();
 		for (int i = 1; i < 5; i++) {
 			if (m) {
 				listOfQueues.add(new RR());

@@ -9,7 +9,7 @@ public class FCFS extends BaseQue implements QueInterface {
 	
 	public FCFS() {
 		super();
-		processQue = new ArrayList<>();
+		processQue = new ArrayList<Process>();
 	}
 	// First Come First Served
 	/*
