@@ -37,7 +37,7 @@ public class Scheduler {
 		myQ = q;
 		java.util.Collections.sort(scheduleList, new Comparator<Process>() {
 			public int compare(Process obj1, Process obj2) {
-				return (int) (obj1.getArrival() - obj2.getArrival());
+				return Float.compare(obj1.getArrival(), obj2.getArrival());
 			}
 		});
 		while (moreToDo) {
