@@ -40,13 +40,31 @@ public class SJF extends BaseQue implements QueInterface {
 			System.out.print("[  ] ");
 			return;
 		}
-		Process p = processQue.get(index);
+		Process p = processQue.get(0);
+		for(Process i : processQue){
+			float xrun = i.getXrun();
+			if(xrun < p.getXrun()){
+				index = processQue.indexOf(i);
+				p = processQue.get(0);
+			}
+		}
+		
+		p.run(quanta);
+					
+	if (p.getRunningT()>0.0f) {
+
+		// return to queue we did not finish in the quanta
+	} else {
+		closeProcess(p);
+		processQue.remove(0);
+	}
+/*		Process p = processQue.get(0);
 		p.run(quanta);
 			for(Process i : processQue){
 				float xrun = i.getXrun();
 				if(xrun < p.getXrun()){
 					index = processQue.indexOf(i);	
-					p = processQue.get(index);
+					p = processQue.get(0);
 				}
 			}
 			
@@ -56,8 +74,8 @@ public class SJF extends BaseQue implements QueInterface {
 			processQue.add(p);
 		} else {
 			closeProcess(p);
-			processQue.remove(index);
-		}  
+			processQue.remove(0);
+		}  */
 		
 		
 	}
@@ -76,7 +94,7 @@ public class SJF extends BaseQue implements QueInterface {
 	@Override
 	public boolean isPreemptive() {
 		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 	@Override

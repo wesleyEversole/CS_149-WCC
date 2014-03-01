@@ -34,7 +34,7 @@ public class main {
 		run(HPFnonpreempt.class);
 
 		// HPF preemp
-		//run(HPFpreempt.class);
+		run(HPFpreempt.class);
 
 	}
 
