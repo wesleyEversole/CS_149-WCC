@@ -31,7 +31,7 @@ public class main {
 		//run(RR.class);
 
 		// HPF nonpreemp
-		run(HPFnonpreempt.class);
+		//run(HPFnonpreempt.class);
 
 		// HPF preemp
 		run(HPFpreempt.class);
@@ -71,7 +71,7 @@ public class main {
 			}
 			
 			Scheduler s = new Scheduler();
-			for (int process = 0; process < 100; process++) {
+			for (int process = 0; process < 300; process++) {
 				s.add(new Process());
 			}
 			s.exec(q);
