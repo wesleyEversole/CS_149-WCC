@@ -4,15 +4,13 @@
 #include <semaphore.h>
 #include <unistd.h>
 
-#define LOCK(l) pthead_mutex_lock((l))
-#define UNLOCK(l) pthead_mutex_unlock((l))
+#define LOCK(l) pthread_mutex_lock((l))
+#define UNLOCK(l) pthread_mutex_unlock((l))
 #define ROWS 10
 #define COLUMNS 10
 #define SEATS ROWS*COLUMNS
 #define NUM_SELLERS 10
 
-pthread_mutex_t mtx1;
-pthread_mutex_t mtx2;
 // forward declare my objects and methods
 typedef struct person Person;
 typedef struct seller Seller;
@@ -30,7 +28,7 @@ typedef enum price {
 } Price;
 
 struct seller {
-	pthread_mutex_t lock;
+	pthread_mutex_t *lock;
 	Price price;
 	int id;
 	int pid; // next person id
@@ -51,7 +49,7 @@ struct person {
 };
 
 struct concert {
-	pthread_mutex_t lock;
+	pthread_mutex_t *lock;
 	Person * seats[ROWS + 1][COLUMNS + 1];
 	Boolean isSoldOut;
 	Boolean hasStarted;
@@ -67,6 +65,7 @@ Seller *allSellers[NUM_SELLERS];
 Seller *createSeller(Price p, int id) {
 	Seller *s;
 	s = malloc(sizeof(Seller));
+	s->lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	s->id = id;
 	s->price = p;
 	s->que = NULL;
@@ -185,6 +184,11 @@ void getHighSeat(Concert *hall, Person *p) {
 	// fill from column 1 to column 10
 }
 
+void getLowSeat(Concert *hall, Person *p) {
+	// fill from row 10 to row 1
+	// fill from column 10 to column 1
+}
+
 void getMediumSeat(Concert *hall, Person *p) {
    // act like high or low depending on set point
 	int row = p->seller->lastRow;
@@ -215,10 +219,6 @@ void getMediumSeat(Concert *hall, Person *p) {
    }
 }
 
-void getLowSeat(Concert *hall, Person *p) {
-	// fill from row 10 to row 1
-	// fill from column 10 to column 1
-}
 
 void getSeat(Concert *hall, Person *person, Price p) {
 	LOCK(hall->lock);
@@ -282,8 +282,10 @@ main(int argc, char *argv[]) {
 	//   threads have cleared or they may crash when their
 	//   data is freed
 	garbage = createSeller(HIGH,0);
+	// finish creation of the concert hall
 	hall.isSoldOut=FALSE;
 	hall.hasStarted=FALSE;
+	hall.lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 
 	// create concert hall
 
