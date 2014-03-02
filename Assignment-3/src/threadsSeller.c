@@ -275,7 +275,12 @@ void sellTickets(Seller *s) {
 void doorsCloseIn60Minutes() {
 	sleep(60);
 }
+void mkTest() {
+	printf("Self Test\n");
+}
+
 main(int argc, char *argv[]) {
+	printf("Threaded Ticket Seller - Project  3\n");
 	// Garbage seller is used to hold persons that
 	//   have been processed by the other sellers
 	//   we have to wait on possible frustrated users
@@ -287,9 +292,16 @@ main(int argc, char *argv[]) {
 	hall.hasStarted=FALSE;
 	hall.lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 
-	// create concert hall
-
+	if (argc == 2) {
+		if (argv[1][0]=='T') {
+			// do self test
+			mkTest();
+			exit(0);
+		}
+		int N = atoi(argv[1]);
+		printf("Run with %d customers per ticket seller\n",N);
 	// create sellers
+	Seller *allSellers[NUM_SELLERS];
 
 	// create attendees
 
@@ -298,6 +310,13 @@ main(int argc, char *argv[]) {
 
 	//pthread_create(pthread_t *thread_id, const pthread_attr_t *attributes,
 	//        void *(*thread_function)(void *), void *arguments);
+	} else {
+		printf("Usage:\n");
+		printf("threadSeller [T|number]\n");
+		printf(" T - run self test without any threading\n");
+		printf(" number - number of customers per ticket seller\n");
+		printf("             full threaded simulation\n");
+	}
 }
 
 void output() {
