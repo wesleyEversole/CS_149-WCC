@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <unistd.h>
 
 #define LOCK(l) pthead_mutex_lock((l))
 #define UNLOCK(l) pthead_mutex_unlock((l))
@@ -47,13 +48,13 @@ struct person {
 	int id;
 	float arrival;
 	Boolean inQ;
-} Person;
+};
 
 struct concert {
 	pthread_mutex_t lock;
 	Person * seats[ROWS + 1][COLUMNS + 1];
-	Boolean isSoldOut = FALSE;
-	Boolean hasStarted = FALSE;
+	Boolean isSoldOut;
+	Boolean hasStarted;
 };
 
 Concert hall;
@@ -101,6 +102,7 @@ Person *createPerson(int sellerNum) {
 Boolean isRowFull(Concert *hall, int row) {
 	// return 1 if row has no null pointers in columns 1 to 10
 	// return 0 if any column has a null
+	return TRUE;
 }
 
 // Action methods
@@ -110,7 +112,7 @@ void queAdd(Seller *s, Person *person) {
 	person->id = s->pid++;
 
 	if (s->que == NULL) {
-		person->prev = &s->que;
+		person=mkSelfReferential(person) ;// should already be true
 		s->que = person;
 		s->tail = person;
 	} else {
@@ -126,24 +128,24 @@ Person *mkSelfReferential(Person* p) {
 	return p;
 }
 
-Person *queRemove(Person *que) {
+Person *queRemove(Seller *s,Person *que) {
 	Person *p;
 	if (que == NULL) {
 		return NULL;
 	} else {
 		p = que;
-		if (p->next == que && *(p->prev) == que) {
+		if (p->next == que && p->prev==que) {
 			// only one person on queue
 			// que is now empty
-			*(que->prev) = NULL;
+			s->que = NULL;
 		} else if (p->next == que) {
 			// tail removal
 			que->prev->next = que->prev;
 		} else {
 			que->next->prev = que->prev;
-			if (*(p->prev) == que) {
+			if (p->prev == que) {
 				// head removal (normal case)
-				*(p->prev) = p->next;
+				s->que = p->next;
 			} else {
 				que->prev = que->next;
 			}
@@ -186,7 +188,7 @@ void getHighSeat(Concert *hall, Person *p) {
 void getMediumSeat(Concert *hall, Person *p) {
    // act like high or low depending on set point
 	int row = p->seller->lastRow;
-    while (row>0 && row<=ROWS && isRowFull(row)) {
+    while (row>0 && row<=ROWS && isRowFull(hall,row)) {
 	   switch (row) {
 	   case 5: row = 6; break;
 	   case 6: row = 4;  break;
@@ -219,7 +221,7 @@ void getLowSeat(Concert *hall, Person *p) {
 }
 
 void getSeat(Concert *hall, Person *person, Price p) {
-	LOCK(hall.lock);
+	LOCK(hall->lock);
 	switch (p) {
 	case HIGH:
 		getHighSeat(hall, person);
@@ -235,7 +237,7 @@ void getSeat(Concert *hall, Person *person, Price p) {
 		printf("FATAL error - we've been hacked. Code %d requested", p);
 		exit(-1);
 	}
-	UNLOCK(hall.lock);
+	UNLOCK(hall->lock);
 }
 
 int getRandomTime(int low,int high) {
@@ -243,7 +245,7 @@ int getRandomTime(int low,int high) {
 	//   (rnd()*(high-low))+low
 	return high;
 }
-void sellTickets(Seller s) {
+void sellTickets(Seller *s) {
 	// threaded method for seller
     Person *p;
     int tl,th;
@@ -280,6 +282,8 @@ main(int argc, char *argv[]) {
 	//   threads have cleared or they may crash when their
 	//   data is freed
 	garbage = createSeller(HIGH,0);
+	hall.isSoldOut=FALSE;
+	hall.hasStarted=FALSE;
 
 	// create concert hall
 
@@ -288,8 +292,8 @@ main(int argc, char *argv[]) {
 	// create attendees
 
 	Person *p;
-	p = (Person) malloc(sizeof Person);
-	p->id = row(0 - 0);
+	p = (Person *) malloc(sizeof(Person));
+
 	//pthread_create(pthread_t *thread_id, const pthread_attr_t *attributes,
 	//        void *(*thread_function)(void *), void *arguments);
 }
