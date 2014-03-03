@@ -104,8 +104,13 @@ Person *createPerson(Seller *s) {
 // general utility methods
 
 Boolean isRowFull(Concert *hall, int row) {
-	// return 1 if row has no null pointers in columns 1 to 10
-	// return 0 if any column has a null
+	if (hall->seats[row][0]!=NULL) return TRUE;
+
+	int i;
+	for (i=1; i<= COLUMNS;i++) {
+		if (hall->seats[row][i]==NULL) return FALSE;
+	}
+	hall->seats[row][0]=hall->seats[row][1];
 	return TRUE;
 }
 
@@ -191,16 +196,21 @@ void frustratedPerson(Person *person) {
 void getHighSeat(Concert *hall, Person *p) {
 	// fill from row 1 to row 10
 	// fill from column 1 to column 10
+	hall->seats[p->seller->lastRow][1] = p;
+	//printf("Assign high value seat row %d\n",p->seller->lastRow);
 }
 
 void getLowSeat(Concert *hall, Person *p) {
 	// fill from row 10 to row 1
 	// fill from column 10 to column 1
+	hall->seats[p->seller->lastRow][10] = p;
+	//printf("Assign low value seat row %d\n",p->seller->lastRow);
 }
 
 void getMediumSeat(Concert *hall, Person *p) {
 	// act like high or low depending on set point
 	int row = p->seller->lastRow;
+
 	while (row > 0 && row <= ROWS && isRowFull(hall, row)) {
 		switch (row) {
 		case 5:
@@ -235,6 +245,7 @@ void getMediumSeat(Concert *hall, Person *p) {
 			break;
 		}
 	}
+
 	if (row > 0 && row <= ROWS) {
 		// legal row to check for seat
 		p->seller->lastRow = row;
@@ -387,6 +398,63 @@ void mkTest() {
 
 	p = removePerson(s->que);// remove person from empty que
 	assert(checkT(p==NULL,"NULL pointer expected"));
+
+	//
+	printf(" getSeat()\n");
+	p=createPerson(s); // current low price seller
+	p->id = 42;
+	// check if row full algorithm even works
+	assert(checkT(!isRowFull(&hall,8),"Is row 8 full NO"));
+
+	printf("   LOW\n");
+	getSeat(&hall,p,LOW);
+	// first call to low assigns 10,10
+	Person *cp = hall.seats[10][10];
+	assert(checkT(cp!=NULL,"Seat 10,10 occupied"));
+	assert(checkN(cp->id,42,"Customer 42 has the seat"));
+
+	printf("   HIGH\n");
+	p->seller->lastRow=1;
+	getSeat(&hall,p,HIGH);
+	// first call to low assigns 1,1
+	cp = hall.seats[1][1];
+	assert(checkT(cp!=NULL,"Seat 1,1 occupied"));
+	assert(checkN(cp->id,42,"Customer 42 has the seat"));
+
+	printf("   MEDIUM\n");
+	p->seller->lastRow=5;
+	getSeat(&hall,p,MEDIUM);
+	// first call to low assigns 5,10
+	cp = hall.seats[5][10];
+	assert(checkT(cp!=NULL,"Seat 5,10 occupied"));
+	assert(checkN(cp->id,42,"Customer 42 has the seat"));
+
+	p->seller->lastRow=3;
+	getSeat(&hall,p,MEDIUM);
+	// first call to low assigns 3,10
+	cp = hall.seats[3][10];
+	assert(checkT(cp!=NULL,"Seat 3,10 occupied"));
+	assert(checkN(cp->id,42,"Customer 42 has the seat"));
+
+	p->seller->lastRow=6;
+	getSeat(&hall,p,MEDIUM);
+	// first call to low assigns 6,1
+	cp = hall.seats[6][1];
+	assert(checkT(cp!=NULL,"Seat 6,1 occupied"));
+	assert(checkN(cp->id,42,"Customer 42 has the seat"));
+
+	// need non-threaded test for sellTickets method
+
+
+	// non-threaded test for frustratedPerson()
+
+	printf(" frustratedPerson()\n");
+	s = createSeller(HIGH,103);
+	p=createPerson(s);
+	p->arrival=0;
+	addPerson(p);
+	frustratedPerson(p);
+	assert(checkT(s->que==NULL,"Person has left the building"));
 }
 
 main(int argc, char *argv[]) {
