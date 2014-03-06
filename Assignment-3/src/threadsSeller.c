@@ -168,7 +168,8 @@ Person *queRemove(Seller *s, Person *que) {
 	p->inQ = FALSE;
 	return p;
 }
-void addPerson(Person *person) {
+void *addPerson(void *param) {
+	Person *person = (Person *) param;
 	sleep(person->arrival);
 	LOCK(person->seller->lock);
 	person->inQ = TRUE;
@@ -194,7 +195,18 @@ void frustratedPerson(Person *person) {
 	// can explicitly kill thread if we want
 }
 void getHighSeat(Concert *hall, Person *p) {
+
+	int row = p->seller->lastRow;
 	// fill from row 1 to row 10
+	while (row > 0 && row <= ROWS && isRowFull(hall, row))
+	{
+		row = row - 1;
+	}
+	if (row > 0 && row <= ROWS)
+	{
+		p->seller->lastRow = row;
+	}
+
 	// fill from column 1 to column 10
 	hall->seats[p->seller->lastRow][1] = p;
 	//printf("Assign high value seat row %d\n",p->seller->lastRow);
@@ -202,6 +214,17 @@ void getHighSeat(Concert *hall, Person *p) {
 
 void getLowSeat(Concert *hall, Person *p) {
 	// fill from row 10 to row 1
+	int row = p->seller->lastRow;
+
+	while (row > 0 && row <= ROWS && isRowFull(hall, row))
+	{
+		row = row + 1;
+		p->seller->lastrow
+	}
+	if (row > 0 && row <= ROWS)
+	{
+		p->seller->lastRow = row;
+	}
 	// fill from column 10 to column 1
 	hall->seats[p->seller->lastRow][10] = p;
 	//printf("Assign low value seat row %d\n",p->seller->lastRow);
@@ -282,11 +305,12 @@ int getRandomTime(int low, int high) {
 	//   (rnd()*(high-low))+low
 	return high;
 }
-void sellTickets(Seller *s) {
+void *sellTickets(void *param) {
 	// threaded method for seller
+
 	Person *p;
 	int tl, th;
-
+	Seller *s = (Seller *) param;
 	while (!(hall.hasStarted || hall.isSoldOut)) {
 		if (s->que != NULL) {
 			p = removePerson(s->que);
@@ -315,6 +339,7 @@ void sellTickets(Seller *s) {
 			UNLOCK(garbage->lock);
 		}
 	}
+	return NULL;
 	// thread finished
 }
 
@@ -457,7 +482,7 @@ void mkTest() {
 	assert(checkT(s->que==NULL,"Person has left the building"));
 }
 
-main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	printf("Threaded Ticket Seller - Project  3\n");
 	// Garbage seller is used to hold persons that
 	//   have been processed by the other sellers
@@ -465,6 +490,7 @@ main(int argc, char *argv[]) {
 	//   threads have cleared or they may crash when their
 	//   data is freed
 	garbage = createSeller(HIGH, 0);
+	int i;
 	// finish creation of the concert hall
 	hall.isSoldOut = FALSE;
 	hall.hasStarted = FALSE;
@@ -483,10 +509,50 @@ main(int argc, char *argv[]) {
 		// create sellers
 		Seller *allSellers[NUM_SELLERS];
 
-		// create attendees
+		//Create Seller for high price
+		allSellers[0] = createSeller(HIGH, 1);
 
+		//create Seller for medium and low price
+		for (i = 1; i < 7; i++) {
+			if (i < 4)
+			{
+				allSellers[i] = createSeller(MEDIUM, i);
+			}
+			allSellers[i+3] = createSeller(LOW, i);
+		}
+
+
+		//declear person pointer
 		Person *p;
-		p = (Person *) malloc(sizeof(Person));
+
+		int sellerNum;
+
+		//create thread when adding person to the Seller que
+		for (sellerNum = 0; sellerNum < NUM_SELLERS; sellerNum++)
+		{
+			for(i = 0; i < argv[1]; i++)
+			{
+				p = createPerson(allSellers[sellerNum]);
+				p->arrival = 0;
+				pthread_t personThreadId;
+				pthread_attr_t personAttr;
+				pthread_attr_init(&personAttr);
+				pthread_create(&personThreadId, &personAttr, &addPerson, (void *) p);
+			}
+		}
+
+		//create thread for putting people into concert hall
+		for (sellerNum = 0; sellerNum < NUM_SELLERS; sellerNum++)
+		{
+			pthread_t sellerThreadId;
+			pthread_attr_t sellerAttr;
+			pthread_attr_init (&sellerAttr);
+			pthread_create(&sellerThreadId, &sellerAttr, &sellTickets, (void *) allSellers[sellerNum]);
+		 }
+
+
+
+		//p = (Person *) malloc(sizeof(Person));
 
 		//pthread_create(pthread_t *thread_id, const pthread_attr_t *attributes,
 		//        void *(*thread_function)(void *), void *arguments);
@@ -497,9 +563,54 @@ main(int argc, char *argv[]) {
 		printf(" number - number of customers per ticket seller\n");
 		printf("             full threaded simulation\n");
 	}
+	return 0;
 }
 
 void output() {
+	//printing the seats layout
+	printf("	FRONT	\n");
+	printf("------------------------------");
+	for (int row = 1; row <= ROWS; row++){
+		printf("| ");
+		for (int col = 1; col <= COLUMNS; col++)
+		{
+			Person *p = hall.seats[row][col];
+			if(hall.seats[row][col] == NULL)
+			{
+				printf("-");
+			} else {
+				if (p->seller->price == HIGH)
+				{
+					printf("H%d", p->seller->id);
+					if (p->id < 10)
+					{
+						printf("0");
+					}
+					printf("%d |", p->id);
+				}
+				if (p->seller->price == HIGH)
+				{
+					printf("M%d", p->seller->id);
+					if (p->id < 10)
+					{
+						printf("0");
+					}
+					printf("%d |", p->id);
 
+				}
+				if (p->seller->price == HIGH)
+				{
+					printf("L%d", p->seller->id);
+					if (p->id < 10)
+					{
+						printf("0");
+					}
+					printf("%d |", p->id);
+				}
+			}
+		}
+		printf("\n");
+	}
+	printf("------------------------------");
+	printf("	BACK	\n");
 }
-
