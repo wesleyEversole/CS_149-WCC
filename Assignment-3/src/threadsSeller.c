@@ -122,6 +122,17 @@ Boolean isSeatEmpty(Concert *hall, int row, int column){
 	return (hall->seats[row][column] == NULL);
 }
 
+Boolean isSoldOut(Concert *hall){
+	int r;
+	int c;
+	for (r = 1; r <= ROWS; r++) {
+		for(c = 1; c <= COLUMNS; c++){
+			if (hall->seats[r][c]==NULL)
+				return FALSE;
+		}
+	}
+	return TRUE;
+}
 // Action methods
 
 void queAdd(Seller *s, Person *person) {
@@ -369,7 +380,9 @@ int getRandomTime(int low, int high) {
 
 void *sellTickets(void *param) {
 	// threaded method for seller
-
+	if(isSoldOut()){
+		return NULL;
+	}
 	Person *p;
 	int tl, th;
 	Seller *s = (Seller *) param;
