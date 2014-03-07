@@ -202,9 +202,11 @@ void output() {
 	//printing the seats layout
 	printf("	FRONT	\n");
 	printf("------------------------------\n");
-	for (int row = 1; row <= ROWS; row++){
+	int row;
+	int col;
+	for (row = 1; row <= ROWS; row++){
 		printf("| ");
-		for (int col = 1; col <= COLUMNS; col++)
+		for (col = 1; col <= COLUMNS; col++)
 		{
 			Person *p = hall.seats[row][col];
 			if(hall.seats[row][col] == NULL)
@@ -559,7 +561,7 @@ int main(int argc, char *argv[]) {
 		for (i = 1; i < 4; i++) {
 				allSellers[i] = createSeller(MEDIUM, i + 1);
 		}
-		for(int i = 1; i < 7; i++){
+		for(i = 1; i < 7; i++){
 			allSellers[i+3] = createSeller(LOW, i + 4);
 		}
 
