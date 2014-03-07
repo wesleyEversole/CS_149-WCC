@@ -110,7 +110,8 @@ Person *createPerson(Seller *s) {
 // general utility methods
 
 Boolean isRowFull(Concert *hall, int row) {
-	for (int i = 1; i <= COLUMNS; i++) {
+	int i;
+	for (i = 1; i <= COLUMNS; i++) {
 		if (hall->seats[row][i]==NULL)
 			return FALSE;
 	}
