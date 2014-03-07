@@ -4,6 +4,7 @@
 #include <semaphore.h>
 #include <unistd.h>
 #include <assert.h>
+#include <string.h>
 
 #define LOCK(l) pthread_mutex_lock((l))
 #define UNLOCK(l) pthread_mutex_unlock((l))
@@ -31,7 +32,8 @@ typedef enum price {
 struct seller {
 	pthread_mutex_t *lock;
 	Price price;
-	int id;
+
+	char* id;
 	int pid; // next person id
 	Person *que; //que->prev points to seller.que when at head (Tricky)
 	Person *tail;
@@ -67,25 +69,31 @@ Seller *createSeller(Price p, int id) {
 	Seller *s;
 	s = malloc(sizeof(Seller));
 	s->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
-	s->id = id;
-	s->price = p;
+
+	char idn[16];
+	sprintf(idn, "%d", id);
+
 	s->que = NULL;
 	s->tail = NULL;
 	s->pid = 1;
 	switch (p) {
 	case HIGH:
 		s->lastRow = 1;
+		s->id = "H";
 		break;
 	case MEDIUM:
 		s->lastRow = 5;
+		s->id = "M";
 		break;
 	case LOW:
 		s->lastRow = 10;
+		s->id = "L";
 		break;
 	default:
 		printf("Error - we've been hacked Price is %d", p);
 		exit(-1);
 	}
+	strncat(s->id, idn, sizeof(s->id));
 	return s;
 }
 /**
@@ -300,10 +308,9 @@ void getSeat(Concert *hall, Person *person, Price p) {
 }
 
 int getRandomTime(int low, int high) {
-	// create random number in range
-	//   (rnd()*(high-low))+low
-	return high;
+	return (rnd() % (high - low)) + low;
 }
+
 void *sellTickets(void *param) {
 	// threaded method for seller
 
@@ -482,6 +489,7 @@ void mkTest() {
 }
 
 int main(int argc, char *argv[]) {
+
 	printf("Threaded Ticket Seller - Project  3\n");
 	// Garbage seller is used to hold persons that
 	//   have been processed by the other sellers
@@ -506,17 +514,15 @@ int main(int argc, char *argv[]) {
 		int N = atoi(argv[1]);
 		printf("Run with %d customers per ticket seller\n", N);
 		// create sellers
+
+
+		//Create Sellers
 		Seller *allSellers[NUM_SELLERS];
-
-		//Create Seller for high price
 		allSellers[0] = createSeller(HIGH, 1);
-
-		//create Seller for medium and low price
-		for (i = 1; i < 7; i++) {
-			if (i < 4)
-			{
+		for (i = 1; i < 4; i++) {
 				allSellers[i] = createSeller(MEDIUM, i);
-			}
+		}
+		for(int i = 1; i < 7; i++){
 			allSellers[i+3] = createSeller(LOW, i);
 		}
 
@@ -579,34 +585,12 @@ void output() {
 			{
 				printf("-");
 			} else {
-				if (p->seller->price == HIGH)
-				{
-					printf("H%d", p->seller->id);
+					printf(p->seller->id);
 					if (p->id < 10)
 					{
 						printf("0");
 					}
 					printf("%d |", p->id);
-				}
-				if (p->seller->price == HIGH)
-				{
-					printf("M%d", p->seller->id);
-					if (p->id < 10)
-					{
-						printf("0");
-					}
-					printf("%d |", p->id);
-
-				}
-				if (p->seller->price == HIGH)
-				{
-					printf("L%d", p->seller->id);
-					if (p->id < 10)
-					{
-						printf("0");
-					}
-					printf("%d |", p->id);
-				}
 			}
 		}
 		printf("\n");
