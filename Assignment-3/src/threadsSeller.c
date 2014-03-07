@@ -126,7 +126,7 @@ Boolean isSeatEmpty(Concert *hall, int row, int column){
 
 void queAdd(Seller *s, Person *person) {
 	// add
-	if(s->id != 0){
+	if(s->id != 11){
 		person->id = s->pid++;
 	}
 
@@ -553,7 +553,7 @@ int main(int argc, char *argv[]) {
 	//   we have to wait on possible frustrated users
 	//   threads have cleared or they may crash when their
 	//   data is freed
-	garbage = createSeller(HIGH, 0);
+	garbage = createSeller(HIGH, 11);
 	int i;
 	// finish creation of the concert hall
 	hall.isSoldOut = FALSE;
@@ -579,13 +579,8 @@ int main(int argc, char *argv[]) {
 		for (i = 1; i < 4; i++) {
 				allSellers[i] = createSeller(MEDIUM, i);
 		}
-<<<<<<< HEAD
 		for(i = 1; i < 7; i++){
-			allSellers[i+3] = createSeller(LOW, i + 4);
-=======
-		for(int i = 1; i < 7; i++){
 			allSellers[i+3] = createSeller(LOW, i);
->>>>>>> upstream/master
 		}
 
 
