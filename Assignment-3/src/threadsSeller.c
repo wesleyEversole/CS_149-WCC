@@ -219,7 +219,6 @@ void getLowSeat(Concert *hall, Person *p) {
 	while (row > 0 && row <= ROWS && isRowFull(hall, row))
 	{
 		row = row + 1;
-		p->seller->lastrow
 	}
 	if (row > 0 && row <= ROWS)
 	{
@@ -526,11 +525,12 @@ int main(int argc, char *argv[]) {
 		Person *p;
 
 		int sellerNum;
-
+		int num;
+		num = atoi(argv[1]);
 		//create thread when adding person to the Seller que
 		for (sellerNum = 0; sellerNum < NUM_SELLERS; sellerNum++)
 		{
-			for(i = 0; i < argv[1]; i++)
+			for(i = 0; i < num; i++)
 			{
 				p = createPerson(allSellers[sellerNum]);
 				p->arrival = 0;
