@@ -324,9 +324,9 @@ void getMediumSeat(Concert *hall, Person *p) {
 		// legal row to check for seat
 		p->seller->lastRow = row;
 		if (row <= 5) {
-			getLowSeat(hall, p);
-		} else {
 			getHighSeat(hall, p);
+		} else {
+			getLowSeat(hall, p);
 		}
 	}
 }
@@ -563,12 +563,12 @@ int main(int argc, char *argv[]) {
 
 		//Create Sellers
 		Seller *allSellers[NUM_SELLERS];
-		allSellers[0] = createSeller(HIGH, 1);
+		allSellers[0] = createSeller(HIGH, 0);
 		for (i = 1; i < 4; i++) {
-				allSellers[i] = createSeller(MEDIUM, i + 1);
+				allSellers[i] = createSeller(MEDIUM, i);
 		}
 		for(int i = 1; i < 7; i++){
-			allSellers[i+3] = createSeller(LOW, i + 4);
+			allSellers[i+3] = createSeller(LOW, i);
 		}
 
 
