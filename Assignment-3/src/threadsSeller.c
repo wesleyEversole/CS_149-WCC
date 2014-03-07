@@ -38,6 +38,7 @@ struct seller {
 	Person *que; //que->prev points to seller.que when at head (Tricky)
 	Person *tail;
 	int lastRow;
+	int lastColumn;
 };
 
 struct person {
@@ -74,6 +75,7 @@ Seller *createSeller(Price p, int id) {
 	s->pid = 1;
 	s->id = id;
 	s->price = p;
+	s->lastColumn = 1;
 
 	switch (p) {
 	case HIGH:
@@ -84,6 +86,7 @@ Seller *createSeller(Price p, int id) {
 		break;
 	case LOW:
 		s->lastRow = 10;
+		s->lastColumn = 10;
 		break;
 	default:
 		printf("Error - we've been hacked Price is %d", p);
@@ -241,35 +244,40 @@ void output() {
 void getHighSeat(Concert *hall, Person *p) {
 
 	int row = p->seller->lastRow;
+	int column = p->seller->lastColumn;
 	// fill from row 1 to row 10
 	while (row > 0 && row <= ROWS && isRowFull(hall, row))
 	{
-		row = row - 1;
-	}
-	if (row > 0 && row <= ROWS)
-	{
+		row = row + 1;
 		p->seller->lastRow = row;
+	}
+	if (column == 11){
+		p->seller->lastColumn = 1;
 	}
 
 	// fill from column 1 to column 10
-	hall->seats[p->seller->lastRow][1] = p;
+	hall->seats[p->seller->lastRow][p->seller->lastColumn] = p;
+	p->seller->lastColumn++;
+
 	//printf("Assign high value seat row %d\n",p->seller->lastRow);
 }
 
 void getLowSeat(Concert *hall, Person *p) {
 	// fill from row 10 to row 1
 	int row = p->seller->lastRow;
+	int column = p->seller->lastColumn;
 
 	while (row > 0 && row <= ROWS && isRowFull(hall, row))
 	{
-		row = row + 1;
-	}
-	if (row > 0 && row <= ROWS)
-	{
+		row = row - 1;
 		p->seller->lastRow = row;
 	}
+	if (column == 0){
+		p->seller->lastColumn = 10;
+	}
 	// fill from column 10 to column 1
-	hall->seats[p->seller->lastRow][10] = p;
+	hall->seats[p->seller->lastRow][p->seller->lastColumn] = p;
+	p->seller->lastColumn--;
 	//printf("Assign low value seat row %d\n",p->seller->lastRow);
 }
 
