@@ -125,7 +125,9 @@ Boolean isSeatEmpty(Concert *hall, int row, int column){
 
 void queAdd(Seller *s, Person *person) {
 	// add
-	person->id = s->pid++;
+	if(s->id != 0){
+		person->id = s->pid++;
+	}
 
 	if (s->que == NULL) {
 		person = mkSelfReferential(person); // should already be true
