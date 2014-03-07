@@ -33,7 +33,7 @@ struct seller {
 	pthread_mutex_t *lock;
 	Price price;
 
-	char* id;
+	int id;
 	int pid; // next person id
 	Person *que; //que->prev points to seller.que when at head (Tricky)
 	Person *tail;
@@ -69,31 +69,26 @@ Seller *createSeller(Price p, int id) {
 	Seller *s;
 	s = malloc(sizeof(Seller));
 	s->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
-
-	char idn[16];
-	sprintf(idn, "%d", id);
-
 	s->que = NULL;
 	s->tail = NULL;
 	s->pid = 1;
+	s->id = id;
+	s->price = p;
+
 	switch (p) {
 	case HIGH:
 		s->lastRow = 1;
-		s->id = "H";
 		break;
 	case MEDIUM:
 		s->lastRow = 5;
-		s->id = "M";
 		break;
 	case LOW:
 		s->lastRow = 10;
-		s->id = "L";
 		break;
 	default:
 		printf("Error - we've been hacked Price is %d", p);
 		exit(-1);
 	}
-	strncat(s->id, idn, sizeof(s->id));
 	return s;
 }
 /**
@@ -103,10 +98,10 @@ Seller *createSeller(Price p, int id) {
 Person *createPerson(Seller *s) {
 	Person *p;
 	p = malloc(sizeof(Person));
-	p = mkSelfReferential(p);
 	p->inQ = FALSE;
 	p->seller = s;
 	p->arrival = rand() % 60;
+	p = mkSelfReferential(p);
 	return p;
 }
 // general utility methods
@@ -202,6 +197,47 @@ void frustratedPerson(Person *person) {
 	}
 	// can explicitly kill thread if we want
 }
+
+void output() {
+	//printing the seats layout
+	printf("	FRONT	\n");
+	printf("------------------------------\n");
+	for (int row = 1; row <= ROWS; row++){
+		printf("| ");
+		for (int col = 1; col <= COLUMNS; col++)
+		{
+			Person *p = hall.seats[row][col];
+			if(hall.seats[row][col] == NULL)
+			{
+				printf("-");
+			} else {
+				switch (p->seller->price) {
+					case HIGH:
+						printf("H");
+						break;
+					case MEDIUM:
+						printf("M");
+						break;
+					case LOW:
+						printf("L");
+						break;
+					default:
+						break;
+				}
+				printf("%d", p->seller->id);
+				if (p->id < 10)
+				{
+					printf("0");
+				}
+				printf("%d |", p->id);
+			}
+		}
+		printf("\n");
+	}
+	printf("------------------------------\n");
+	printf("	BACK	\n");
+}
+
 void getHighSeat(Concert *hall, Person *p) {
 
 	int row = p->seller->lastRow;
@@ -340,6 +376,7 @@ void *sellTickets(void *param) {
 			}
 			sleep(getRandomTime(tl, th)); // random time based on price
 			// this code needed to handle frustrated customers safely
+			output();
 			LOCK(garbage->lock);
 			queAdd(garbage, p);
 			UNLOCK(garbage->lock);
@@ -520,10 +557,10 @@ int main(int argc, char *argv[]) {
 		Seller *allSellers[NUM_SELLERS];
 		allSellers[0] = createSeller(HIGH, 1);
 		for (i = 1; i < 4; i++) {
-				allSellers[i] = createSeller(MEDIUM, i);
+				allSellers[i] = createSeller(MEDIUM, i + 1);
 		}
 		for(int i = 1; i < 7; i++){
-			allSellers[i+3] = createSeller(LOW, i);
+			allSellers[i+3] = createSeller(LOW, i + 4);
 		}
 
 
@@ -572,29 +609,3 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-void output() {
-	//printing the seats layout
-	printf("	FRONT	\n");
-	printf("------------------------------");
-	for (int row = 1; row <= ROWS; row++){
-		printf("| ");
-		for (int col = 1; col <= COLUMNS; col++)
-		{
-			Person *p = hall.seats[row][col];
-			if(hall.seats[row][col] == NULL)
-			{
-				printf("-");
-			} else {
-					printf(p->seller->id);
-					if (p->id < 10)
-					{
-						printf("0");
-					}
-					printf("%d |", p->id);
-			}
-		}
-		printf("\n");
-	}
-	printf("------------------------------");
-	printf("	BACK	\n");
-}
