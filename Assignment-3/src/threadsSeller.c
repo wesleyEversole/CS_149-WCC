@@ -110,14 +110,15 @@ Person *createPerson(Seller *s) {
 // general utility methods
 
 Boolean isRowFull(Concert *hall, int row) {
-	if (hall->seats[row][0]!=NULL) return TRUE;
-
-	int i;
-	for (i=1; i<= COLUMNS;i++) {
-		if (hall->seats[row][i]==NULL) return FALSE;
+	for (int i = 1; i <= COLUMNS; i++) {
+		if (hall->seats[row][i]==NULL)
+			return FALSE;
 	}
-	hall->seats[row][0]=hall->seats[row][1];
 	return TRUE;
+}
+
+Boolean isSeatEmpty(Concert *hall, int row, int column){
+	return (hall->seats[row][column] == NULL);
 }
 
 // Action methods
@@ -246,19 +247,22 @@ void getHighSeat(Concert *hall, Person *p) {
 	int row = p->seller->lastRow;
 	int column = p->seller->lastColumn;
 	// fill from row 1 to row 10
-	while (row > 0 && row <= ROWS && isRowFull(hall, row))
+	while (row > 0 && row <= ROWS && !isSeatEmpty(hall, row, column))
 	{
-		row = row + 1;
-		p->seller->lastRow = row;
+		if(column == 10){
+			column = 1;
+			row = row + 1;
+		}
+		else {
+			column = column + 1;
+		}
 	}
-	if (column == 11){
-		p->seller->lastColumn = 1;
-	}
+
 
 	// fill from column 1 to column 10
-	hall->seats[p->seller->lastRow][p->seller->lastColumn] = p;
-	p->seller->lastColumn++;
-
+	hall->seats[row][column] = p;
+	p->seller->lastRow = row;
+	p->seller->lastColumn = column;
 	//printf("Assign high value seat row %d\n",p->seller->lastRow);
 }
 
@@ -267,17 +271,20 @@ void getLowSeat(Concert *hall, Person *p) {
 	int row = p->seller->lastRow;
 	int column = p->seller->lastColumn;
 
-	while (row > 0 && row <= ROWS && isRowFull(hall, row))
+	while (row > 0 && row <= ROWS && !isSeatEmpty(hall, row, column))
 	{
-		row = row - 1;
-		p->seller->lastRow = row;
-	}
-	if (column == 0){
-		p->seller->lastColumn = 10;
+		if(column == 1){
+			column = 10;
+			row = row - 1;
+		}
+		else {
+			column = column - 1;
+		}
 	}
 	// fill from column 10 to column 1
-	hall->seats[p->seller->lastRow][p->seller->lastColumn] = p;
-	p->seller->lastColumn--;
+	hall->seats[row][column] = p;
+	p->seller->lastRow = row;
+	p->seller->lastColumn = column;
 	//printf("Assign low value seat row %d\n",p->seller->lastRow);
 }
 
