@@ -375,12 +375,12 @@ void getSeat(Concert *hall, Person *person, Price p) {
 }
 
 int getRandomTime(int low, int high) {
-	return (rnd() % (high - low)) + low;
+	return (rand() % (high - low)) + low;
 }
 
 void *sellTickets(void *param) {
 	// threaded method for seller
-	if(isSoldOut()){
+	if(isSoldOut(&hall)){
 		return NULL;
 	}
 	Person *p;
