@@ -120,17 +120,28 @@ Person *createPerson(Seller *s) {
 }
 // general utility methods
 
-Boolean isRowFull(Concert *hall, int row) {
-	int i;
-	for (i = 1; i <= COLUMNS; i++) {
-		if (hall->seats[row][i]==NULL)
-			return FALSE;
-	}
-	return TRUE;
-}
 
 Boolean isSeatEmpty(Concert *hall, int row, int column){
 	return (hall->seats[row][column] == NULL);
+}
+
+Boolean isRowFull(Concert *hall,int row) {
+	int col;
+	Boolean retv;
+	retv=TRUE;
+	if (hall->seats[row][0] != NULL) return retv;
+
+	for (col=1;col<=COLUMNS;col++) {
+		if (isSeatEmpty(hall,row,col)) {
+			retv=FALSE;
+			break;
+		}
+	}
+	if (retv) {
+		// mark row as full by setting col 0 == col 1
+		hall->seats[row][0]=hall->seats[row][1];
+	}
+	return retv;
 }
 
 Boolean isSoldOut(Concert *hall){
@@ -292,10 +303,13 @@ void getHighSeat(Concert *hall, Person *p) {
 	{
 		if(column == 10){
 			column = 1;
-			row = row + 1;
+			row++;
 		}
 		else {
-			column = column + 1;
+			column++;
+		}
+		if (isRowFull(hall,row)) {
+			row++;
 		}
 	}
 
@@ -316,10 +330,13 @@ void getLowSeat(Concert *hall, Person *p) {
 	{
 		if(column == 1){
 			column = 10;
-			row = row - 1;
+			row--;
 		}
 		else {
-			column = column - 1;
+			column--;
+		}
+		if (isRowFull(hall,row)) {
+			row--;
 		}
 	}
 	// fill from column 10 to column 1
