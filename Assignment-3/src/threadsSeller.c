@@ -32,7 +32,7 @@ typedef enum price {
 struct seller {
 	pthread_mutex_t *lock;
 	Price price;
-
+    Boolean open;
 	int id;
 	int pid; // next person id
 	Person *que; //que->prev points to seller.que when at head (Tricky)
@@ -76,7 +76,7 @@ Seller *createSeller(Price p, int id) {
 	s->id = id;
 	s->price = p;
 	s->lastColumn = 1;
-
+    s->open = TRUE;
 	switch (p) {
 	case HIGH:
 		s->lastRow = 1;
@@ -186,6 +186,7 @@ void *addPerson(void *param) {
 	queAdd(person->seller, person);
 	UNLOCK(person->seller->lock);
 	// can explicitly kill thread if we want
+	return person;
 }
 
 Person *removePerson(Person *person) {
@@ -364,7 +365,7 @@ void getSeat(Concert *hall, Person *person, Price p) {
 }
 
 int getRandomTime(int low, int high) {
-	return (rnd() % (high - low)) + low;
+	return (rand() % (high - low)) + low;
 }
 
 void *sellTickets(void *param) {
@@ -402,17 +403,25 @@ void *sellTickets(void *param) {
 			UNLOCK(garbage->lock);
 		}
 	}
+	s->open = FALSE;
 	return NULL;
 	// thread finished
 }
 
-void doorsCloseIn60Minutes() {
+void closeDoorsIn60Minutes() {
 	sleep(60);
+	LOCK(hall.lock);
+	hall.hasStarted = TRUE;
+	UNLOCK(hall.lock);
+}
+void waitOnSellersToFinish(pthread_t *sellerThreads[],int numSellers) {
+	Boolean notDone=TRUE;
 }
 Boolean checkN(int value, int expect, char * msg) {
 	if (expect != value) {
 		printf("%s: Found %d, Expected %d\n", msg, value, expect);
 	}
+	return expect != value;
 }
 Boolean checkT(int expr, char * msg) {
 	if (!expr) {
@@ -575,55 +584,46 @@ int main(int argc, char *argv[]) {
 
 		//Create Sellers
 		Seller *allSellers[NUM_SELLERS];
+
 		allSellers[0] = createSeller(HIGH, 0);
+
 		for (i = 1; i < 4; i++) {
 				allSellers[i] = createSeller(MEDIUM, i);
 		}
-<<<<<<< HEAD
+
 		for(i = 1; i < 7; i++){
-			allSellers[i+3] = createSeller(LOW, i + 4);
-=======
-		for(int i = 1; i < 7; i++){
-			allSellers[i+3] = createSeller(LOW, i);
->>>>>>> upstream/master
+			allSellers[i+3] = createSeller(LOW, i + 3);
 		}
 
-
-		//declear person pointer
+		//declare person pointer
 		Person *p;
 
 		int sellerNum;
 		int num;
 		num = atoi(argv[1]);
 		//create thread when adding person to the Seller que
+		pthread_t personThreadId[NUM_SELLERS*num];
+
+
+		//create thread for putting people into concert hall
+		pthread_t sellerThreadId[NUM_SELLERS];
+
 		for (sellerNum = 0; sellerNum < NUM_SELLERS; sellerNum++)
 		{
+			pthread_create(&sellerThreadId[sellerNum], NULL,
+								       &sellTickets, (void *) allSellers[sellerNum]);
 			for(i = 0; i < num; i++)
 			{
 				p = createPerson(allSellers[sellerNum]);
 				p->arrival = 0;
-				pthread_t personThreadId;
-				pthread_attr_t personAttr;
-				pthread_attr_init(&personAttr);
-				pthread_create(&personThreadId, &personAttr, &addPerson, (void *) p);
+				pthread_create(&personThreadId[sellerNum*num+i], NULL,
+						       &addPerson, (void *) p);
 			}
 		}
 
-		//create thread for putting people into concert hall
-		for (sellerNum = 0; sellerNum < NUM_SELLERS; sellerNum++)
-		{
-			pthread_t sellerThreadId;
-			pthread_attr_t sellerAttr;
-			pthread_attr_init (&sellerAttr);
-			pthread_create(&sellerThreadId, &sellerAttr, &sellTickets, (void *) allSellers[sellerNum]);
-		 }
+		closeDoorsIn60Minutes();
+		waitForSellersToFinish(&sellerThreadId,NUM_SELLERS);
 
-
-
-		//p = (Person *) malloc(sizeof(Person));
-
-		//pthread_create(pthread_t *thread_id, const pthread_attr_t *attributes,
-		//        void *(*thread_function)(void *), void *arguments);
 	} else {
 		printf("Usage:\n");
 		printf("threadSeller [T|number]\n");
@@ -631,6 +631,8 @@ int main(int argc, char *argv[]) {
 		printf(" number - number of customers per ticket seller\n");
 		printf("             full threaded simulation\n");
 	}
+
+	printf("Exiting threadSeller\n");
 	return 0;
 }
 
