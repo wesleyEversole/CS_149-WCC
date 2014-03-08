@@ -589,6 +589,7 @@ int main(int argc, char *argv[]) {
 		//Create Sellers
 		Seller *allSellers[NUM_SELLERS];
 		allSellers[0] = createSeller(HIGH, 0);
+		int i;
 		for (i = 1; i < 4; i++) {
 				allSellers[i] = createSeller(MEDIUM, i);
 		}
