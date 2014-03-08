@@ -122,11 +122,22 @@ Boolean isSeatEmpty(Concert *hall, int row, int column){
 	return (hall->seats[row][column] == NULL);
 }
 
+Boolean isSoldOut(Concert *hall){
+	int r;
+	int c;
+	for (r = 1; r <= ROWS; r++) {
+		for(c = 1; c <= COLUMNS; c++){
+			if (hall->seats[r][c]==NULL)
+				return FALSE;
+		}
+	}
+	return TRUE;
+}
 // Action methods
 
 void queAdd(Seller *s, Person *person) {
 	// add
-	if(s->id != 0){
+	if(s->id != 11){
 		person->id = s->pid++;
 	}
 
@@ -370,7 +381,9 @@ int getRandomTime(int low, int high) {
 
 void *sellTickets(void *param) {
 	// threaded method for seller
-
+	if(isSoldOut(&hall)){
+		return NULL;
+	}
 	Person *p;
 	int tl, th;
 	Seller *s = (Seller *) param;
@@ -562,7 +575,7 @@ int main(int argc, char *argv[]) {
 	//   we have to wait on possible frustrated users
 	//   threads have cleared or they may crash when their
 	//   data is freed
-	garbage = createSeller(HIGH, 0);
+	garbage = createSeller(HIGH, 11);
 	int i;
 	// finish creation of the concert hall
 	hall.isSoldOut = FALSE;
@@ -579,14 +592,13 @@ int main(int argc, char *argv[]) {
 		}
 		int N = atoi(argv[1]);
 		printf("Run with %d customers per ticket seller\n", N);
-		// create sellers
-
 
 		//Create Sellers
 		Seller *allSellers[NUM_SELLERS];
 
 		allSellers[0] = createSeller(HIGH, 0);
 
+		int i;
 		for (i = 1; i < 4; i++) {
 				allSellers[i] = createSeller(MEDIUM, i);
 		}
@@ -599,10 +611,9 @@ int main(int argc, char *argv[]) {
 		Person *p;
 
 		int sellerNum;
-		int num;
-		num = atoi(argv[1]);
+		
 		//create thread when adding person to the Seller que
-		pthread_t personThreadId[NUM_SELLERS*num];
+		pthread_t personThreadId[NUM_SELLERS*N];
 
 
 		//create thread for putting people into concert hall
@@ -611,13 +622,13 @@ int main(int argc, char *argv[]) {
 		for (sellerNum = 0; sellerNum < NUM_SELLERS; sellerNum++)
 		{
 			pthread_create(&sellerThreadId[sellerNum], NULL,
-								       &sellTickets, (void *) allSellers[sellerNum]);
-			for(i = 0; i < num; i++)
+				       &sellTickets, (void *) allSellers[sellerNum]);
+			for(i = 0; i < N; i++)
 			{
 				p = createPerson(allSellers[sellerNum]);
 				p->arrival = 0;
-				pthread_create(&personThreadId[sellerNum*num+i], NULL,
-						       &addPerson, (void *) p);
+				pthread_create(&personThreadId[sellerNum*N+i], NULL,
+					       &addPerson, (void *) p);
 			}
 		}
 
