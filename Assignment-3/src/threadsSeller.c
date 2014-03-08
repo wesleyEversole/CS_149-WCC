@@ -602,7 +602,6 @@ int main(int argc, char *argv[]) {
 	//   threads have cleared or they may crash when their
 	//   data is freed
 	garbage = createSeller(HIGH, 11);
-	int i;
 	// finish creation of the concert hall
 	hall.isSoldOut = FALSE;
 	hall.hasStarted = FALSE;
