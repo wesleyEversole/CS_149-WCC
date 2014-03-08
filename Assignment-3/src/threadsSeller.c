@@ -8,6 +8,7 @@
 
 #define LOCK(l) pthread_mutex_lock((l))
 #define UNLOCK(l) pthread_mutex_unlock((l))
+#define PRINTEVENT(s,p,m) LOCK(&outputLock);printEvent((s),(p),(m));UNLOCK(&outputLock)
 #define ROWS 10
 #define COLUMNS 10
 #define SEATS ROWS*COLUMNS
@@ -71,7 +72,7 @@ int minutes; // simulated system time
 
 char buffer[512];
 char *getTime() {
-	sprintf(buffer,"0:%d",minutes);
+	sprintf(buffer,"%1d:%02d",minutes/60,minutes%60);
 	return buffer;
 }
 
@@ -155,14 +156,18 @@ Boolean isSoldOut(Concert *hall){
 	}
 	return TRUE;
 }
+void printEvent(Seller* s, Person* person, char *msg) {
+  // add
+  printf("%6s | Seller %2d | Customer %2d ", getTime(), s->id, person->id);
+  printf("| Event: %s\n",msg);
+}
+
 // Action methods
 
 void queAdd(Seller *s, Person *person) {
 	// add
-	printf("%s | Seller %d | Customer %d ", getTime(), s->id, person->id);
-	printf("| Event: Customer Arrived");
-	output();
-	if(s->id != 11){
+
+	if(s->id <= NUM_SELLERS){
 		person->id = s->pid++;
 	}
 
@@ -174,8 +179,8 @@ void queAdd(Seller *s, Person *person) {
 		person->prev = s->tail;
 		s->tail->next = person;
 		s->tail = person;
-
 	}
+	PRINTEVENT(s, person, "Customer Arrived");
 }
 
 Person *mkSelfReferential(Person* p) {
@@ -246,12 +251,12 @@ void frustratedPerson(Person *person) {
 void output() {
 	//printing the seats layout
 	printf("Time:%s	FRONT	\n",getTime());
-	printf("------------------------------\n");
+	//printf("------------------------------\n");
 	int row;
 	int col;
 	for (row = 1; row <= ROWS; row++){
-		printf("| ");
-		for (col = 0; col <= COLUMNS; col++)
+		printf("       | ");
+		for (col = 1; col <= COLUMNS; col++)
 		{
 			Person *p = hall.seats[row][col];
 			if(hall.seats[row][col] == NULL)
@@ -281,7 +286,7 @@ void output() {
 		}
 		printf("\n");
 	}
-	printf("------------------------------\n");
+	//printf("------------------------------\n");
 	printf("	BACK	\n");
 }
 
@@ -314,6 +319,7 @@ void getHighSeat(Concert *hall, Person *p) {
 		}
 		if (isRowFull(hall,row)) {
 			row++;
+			column=1;
 		}
 	}
 
@@ -322,9 +328,7 @@ void getHighSeat(Concert *hall, Person *p) {
 	hall->seats[row][column] = p;
 	p->seller->lastRow = row;
 	p->seller->lastColumn = column;
-	printf("%s | Seller %d | Customer %d ", getTime(), p->seller->id, p->id);
-	printf("| Event: Customer Assigned a Seat");
-	output();
+	PRINTEVENT(p->seller,p,"Customer Assigned a Seat");
 }
 
 void getLowSeat(Concert *hall, Person *p) {
@@ -349,9 +353,7 @@ void getLowSeat(Concert *hall, Person *p) {
 	hall->seats[row][column] = p;
 	p->seller->lastRow = row;
 	p->seller->lastColumn = column;
-	printf("%s | Seller %d | Customer %d ", getTime(), p->seller->id, p->id);
-	printf("| Event: Customer Assigned a Seat");
-	output();
+	PRINTEVENT(p->seller,p,"Customer Assigned a Seat");
 }
 
 void getMediumSeat(Concert *hall, Person *p) {
@@ -402,9 +404,6 @@ void getMediumSeat(Concert *hall, Person *p) {
 			getLowSeat(hall, p);
 		}
 	}
-	printf("%s | Seller %d | Customer %d ", getTime(), p->seller->id, p->id);
-	printf("| Event: Customer Assigned a Seat");
-	output();
 }
 
 void getSeat(Concert *hall, Person *person, Price p) {
@@ -463,17 +462,19 @@ void *sellTickets(void *param) {
 				printf("Error, we've been hacked Price is %d", s->price);
 				exit(-1);
 			}
-			printf("%s | Seller %d | Customer %d ", getTime(), s->id, p->id);
-			printf("| Event: Customer Served");
-			output();
-			sleep(getRandomTime(tl, th)); // random time based on price
-			// this code needed to handle frustrated customers safely
+			PRINTEVENT(s,p,"Customer Served");
+
 			LOCK(&outputLock);
 			output();
 			UNLOCK(&outputLock);
+
+			sleep(getRandomTime(tl, th)); // random time based on price
+			// this code needed to handle frustrated customers safely
+
 			LOCK(garbage->lock);
 			queAdd(garbage, p);
 			UNLOCK(garbage->lock);
+			PRINTEVENT(s,p,"Customer Purchase Complete - Leaves Seller");
 		}
 	}
 	s->open = FALSE;
@@ -701,7 +702,7 @@ int main(int argc, char *argv[]) {
 			for(i = 0; i < N; i++)
 			{
 				p = createPerson(allSellers[sellerNum]);
-				p->arrival = 0;
+				//p->arrival = 0;
 				pthread_create(&personThreadId[sellerNum*N+i], NULL,
 					       &addPerson, (void *) p);
 			}
