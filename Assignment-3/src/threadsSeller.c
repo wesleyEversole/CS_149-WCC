@@ -59,6 +59,8 @@ struct concert {
 	Boolean hasStarted;
 };
 
+pthread_mutex_t outputLock;
+
 Concert hall;
 
 Seller *garbage;
@@ -78,6 +80,7 @@ Seller *createSeller(Price p, int id) {
 	Seller *s;
 	s = malloc(sizeof(Seller));
 	s->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(s->lock,NULL);
 	s->que = NULL;
 	s->tail = NULL;
 	s->pid = 1;
@@ -273,7 +276,7 @@ void *timer (void *parm) {
 	while (!done) {
 		sleep(1);
 		minutes++;
-		if (minutes>60) {
+		if (minutes>240) {
 			done = TRUE; // stop after 4 hours maximum
 		}
 	}
@@ -431,7 +434,9 @@ void *sellTickets(void *param) {
 			}
 			sleep(getRandomTime(tl, th)); // random time based on price
 			// this code needed to handle frustrated customers safely
+			LOCK(&outputLock);
 			output();
+			UNLOCK(&outputLock);
 			LOCK(garbage->lock);
 			queAdd(garbage, p);
 			UNLOCK(garbage->lock);
@@ -613,6 +618,8 @@ int main(int argc, char *argv[]) {
 	hall.isSoldOut = FALSE;
 	hall.hasStarted = FALSE;
 	hall.lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_init(hall.lock,NULL);
+    pthread_mutex_init(&outputLock,NULL);
 
 	if (argc == 2) {
 		if (argv[1][0] == 'T') {
