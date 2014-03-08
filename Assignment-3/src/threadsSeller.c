@@ -407,7 +407,6 @@ void getMediumSeat(Concert *hall, Person *p) {
 }
 
 void getSeat(Concert *hall, Person *person, Price p) {
-	LOCK(hall->lock);
 	switch (p) {
 	case HIGH:
 		getHighSeat(hall, person);
@@ -423,7 +422,6 @@ void getSeat(Concert *hall, Person *person, Price p) {
 		printf("FATAL error - we've been hacked. Code %d requested", p);
 		exit(-1);
 	}
-	UNLOCK(hall->lock);
 }
 
 int getRandomTime(int low, int high) {
@@ -432,19 +430,28 @@ int getRandomTime(int low, int high) {
 
 void *sellTickets(void *param) {
 	// threaded method for seller
-	if(isSoldOut(&hall)){
-		printf("%s |         |          ", getTime());
-		printf("| Event: Tickets Sold Out");
-		output();
-		return NULL;
-	}
+
 	Person *p;
 	int tl, th;
 	Seller *s = (Seller *) param;
 	while (!(hall.hasStarted || hall.isSoldOut)) {
+		if(isSoldOut(&hall)){
+
+			LOCK(&outputLock);
+			printf("%6s |           |             ", getTime());
+			printf("| Event: Tickets Sold Out\n");
+			UNLOCK(&outputLock);
+			LOCK(hall.lock);
+			hall.isSoldOut = TRUE;
+			UNLOCK(hall.lock);
+		}
 		if (s->que != NULL) {
 			p = removePerson(s->que);
+
+			LOCK(hall.lock);
 			getSeat(&hall, p, s->price);
+			UNLOCK(hall.lock);
+
 			switch (s->price) {
 			case HIGH:
 				tl = 1;
