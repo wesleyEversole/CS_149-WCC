@@ -65,6 +65,8 @@ Seller *garbage;
 
 Seller *allSellers[NUM_SELLERS];
 
+int minutes; // simulated system time
+
 // Constructors
 Seller *createSeller(Price p, int id) {
 	Seller *s;
@@ -219,18 +221,18 @@ void frustratedPerson(Person *person) {
 
 void output() {
 	//printing the seats layout
-	printf("	FRONT	\n");
+	printf("Time:%d	FRONT	\n",minutes);
 	printf("------------------------------\n");
 	int row;
 	int col;
 	for (row = 1; row <= ROWS; row++){
 		printf("| ");
-		for (col = 1; col <= COLUMNS; col++)
+		for (col = 0; col <= COLUMNS; col++)
 		{
 			Person *p = hall.seats[row][col];
 			if(hall.seats[row][col] == NULL)
 			{
-				printf("-");
+				printf("  @  |");
 			} else {
 				switch (p->seller->price) {
 					case HIGH:
@@ -257,6 +259,18 @@ void output() {
 	}
 	printf("------------------------------\n");
 	printf("	BACK	\n");
+}
+
+void *timer (void *parm) {
+	Boolean done = false;
+	minutes =0;
+	while (!done) {
+		sleep(1);
+		minutes++;
+		if (minutes>240) {
+			done = TRUE; // stop after 4 hours maximum
+		}
+	}
 }
 
 void getHighSeat(Concert *hall, Person *p) {
@@ -425,10 +439,22 @@ void closeDoorsIn60Minutes() {
 	sleep(60);
 	LOCK(hall.lock);
 	hall.hasStarted = TRUE;
+	printf("\nThe concert hall is closed\n\n");
 	UNLOCK(hall.lock);
 }
-void waitOnSellersToFinish(pthread_t *sellerThreads[],int numSellers) {
+void waitForSellersToFinish(Seller *seller[],int numSellers) {
 	Boolean notDone=TRUE;
+	int sid;
+	while(notDone) {
+		notDone = FALSE;
+		for(sid=0;sid<numSellers;sid++) {
+			if (seller[sid]->open) {
+				notDone = TRUE;
+				break;
+			}
+		}
+		sleep(1);
+	}
 }
 Boolean checkN(int value, int expect, char * msg) {
 	if (expect != value) {
@@ -615,9 +641,11 @@ int main(int argc, char *argv[]) {
 		//create thread when adding person to the Seller que
 		pthread_t personThreadId[NUM_SELLERS*N];
 
-
 		//create thread for putting people into concert hall
 		pthread_t sellerThreadId[NUM_SELLERS];
+
+		pthread_t timerTID;
+		pthread_create(&timerTID,NULL,&timer,NULL);
 
 		for (sellerNum = 0; sellerNum < NUM_SELLERS; sellerNum++)
 		{
