@@ -273,7 +273,7 @@ void *timer (void *parm) {
 	while (!done) {
 		sleep(1);
 		minutes++;
-		if (minutes>240) {
+		if (minutes>60) {
 			done = TRUE; // stop after 4 hours maximum
 		}
 	}
