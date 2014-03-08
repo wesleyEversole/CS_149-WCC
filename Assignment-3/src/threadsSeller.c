@@ -67,8 +67,10 @@ Seller *allSellers[NUM_SELLERS];
 
 int minutes; // simulated system time
 
+char buffer[512];
 char *getTime() {
-	return "";
+	sprintf(buffer,"0:%d",minutes);
+	return buffer;
 }
 
 // Constructors
@@ -225,7 +227,7 @@ void frustratedPerson(Person *person) {
 
 void output() {
 	//printing the seats layout
-	printf("Time:%d	FRONT	\n",minutes);
+	printf("Time:%s	FRONT	\n",getTime());
 	printf("------------------------------\n");
 	int row;
 	int col;
@@ -275,6 +277,7 @@ void *timer (void *parm) {
 			done = TRUE; // stop after 4 hours maximum
 		}
 	}
+	return NULL;
 }
 
 void getHighSeat(Concert *hall, Person *p) {
@@ -664,7 +667,7 @@ int main(int argc, char *argv[]) {
 		}
 
 		closeDoorsIn60Minutes();
-		waitForSellersToFinish(&sellerThreadId,NUM_SELLERS);
+		waitForSellersToFinish(allSellers,NUM_SELLERS);
 
 	} else {
 		printf("Usage:\n");
