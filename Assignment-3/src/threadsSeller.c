@@ -67,6 +67,10 @@ Seller *allSellers[NUM_SELLERS];
 
 int minutes; // simulated system time
 
+char *getTime() {
+	return "";
+}
+
 // Constructors
 Seller *createSeller(Price p, int id) {
 	Seller *s;
