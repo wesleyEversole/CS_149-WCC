@@ -159,6 +159,9 @@ Boolean isSoldOut(Concert *hall){
 
 void queAdd(Seller *s, Person *person) {
 	// add
+	printf("%s | Seller %d | Customer %d ", getTime(), s->id, person->id);
+	printf("| Event: Customer Arrived");
+	output();
 	if(s->id != 11){
 		person->id = s->pid++;
 	}
@@ -171,6 +174,7 @@ void queAdd(Seller *s, Person *person) {
 		person->prev = s->tail;
 		s->tail->next = person;
 		s->tail = person;
+
 	}
 }
 
@@ -318,7 +322,9 @@ void getHighSeat(Concert *hall, Person *p) {
 	hall->seats[row][column] = p;
 	p->seller->lastRow = row;
 	p->seller->lastColumn = column;
-	//printf("Assign high value seat row %d\n",p->seller->lastRow);
+	printf("%s | Seller %d | Customer %d ", getTime(), p->seller->id, p->id);
+	printf("| Event: Customer Assigned a Seat");
+	output();
 }
 
 void getLowSeat(Concert *hall, Person *p) {
@@ -343,7 +349,9 @@ void getLowSeat(Concert *hall, Person *p) {
 	hall->seats[row][column] = p;
 	p->seller->lastRow = row;
 	p->seller->lastColumn = column;
-	//printf("Assign low value seat row %d\n",p->seller->lastRow);
+	printf("%s | Seller %d | Customer %d ", getTime(), p->seller->id, p->id);
+	printf("| Event: Customer Assigned a Seat");
+	output();
 }
 
 void getMediumSeat(Concert *hall, Person *p) {
@@ -394,6 +402,9 @@ void getMediumSeat(Concert *hall, Person *p) {
 			getLowSeat(hall, p);
 		}
 	}
+	printf("%s | Seller %d | Customer %d ", getTime(), p->seller->id, p->id);
+	printf("| Event: Customer Assigned a Seat");
+	output();
 }
 
 void getSeat(Concert *hall, Person *person, Price p) {
@@ -423,6 +434,9 @@ int getRandomTime(int low, int high) {
 void *sellTickets(void *param) {
 	// threaded method for seller
 	if(isSoldOut(&hall)){
+		printf("%s |         |          ", getTime());
+		printf("| Event: Tickets Sold Out");
+		output();
 		return NULL;
 	}
 	Person *p;
@@ -449,6 +463,9 @@ void *sellTickets(void *param) {
 				printf("Error, we've been hacked Price is %d", s->price);
 				exit(-1);
 			}
+			printf("%s | Seller %d | Customer %d ", getTime(), s->id, p->id);
+			printf("| Event: Customer Served");
+			output();
 			sleep(getRandomTime(tl, th)); // random time based on price
 			// this code needed to handle frustrated customers safely
 			LOCK(&outputLock);
