@@ -36,8 +36,12 @@ public class Main {
 		
 	}
 	private static void runPager(Pager p, int references) {
-		
+		PageProcess pp = new PageProcess(p);
+		for (int i=0; i<references; i++) {
+			pp.run();
+		}
 	}
+	
 	private static void pageSet() {
 		int numberPageReferences = 100;
 		int numberTrials = 5;
