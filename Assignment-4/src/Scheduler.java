@@ -26,10 +26,6 @@ public class Scheduler {
 	public void add(Process p) {
 		p.setProcessID(pid++);
 		scheduleList.add(p);
-		System.out.print("Process: " + p + " Arrival time: " + p.getArrival());
-		System.out.print(" Expected runtime: " + p.getRunningT());
-		System.out.print(" Priority:" + p.getPriority());
-		System.out.println();
 	}
 
 	public void exec(QueInterface q) {

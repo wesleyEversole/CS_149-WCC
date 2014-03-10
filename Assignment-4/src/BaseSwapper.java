@@ -92,7 +92,6 @@ public class BaseSwapper implements Swapper {
 
 	@Override
 	public void load(Process p) {
-
 		if (p.getLocation() < 0) {
 			count++;
 		}

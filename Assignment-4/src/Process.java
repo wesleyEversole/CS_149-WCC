@@ -51,7 +51,11 @@ public class Process {
 	}
 
 	public int getLocation() {
-		return memB.getStart();
+		if (memB==null) {
+		    return memLoc;	
+		} else {
+			return memB.getStart();
+		}
 	}
 
 	public void setSize(int size) {
@@ -124,6 +128,7 @@ public class Process {
 		runningT = xrun;
 		lastQuanta = 0.0f;
 		pid = 0;
+		memB=null;
 	}
 
 	private float round10th(float f) {
