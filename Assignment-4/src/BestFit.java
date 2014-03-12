@@ -1,5 +1,4 @@
-
-public class BestFit extends BaseSwapper {
+public class BestFit extends BaseSwapper {	
 	@Override
 	public void load(Process p) {
 		super.load(p);
