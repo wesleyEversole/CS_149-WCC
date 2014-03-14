@@ -78,9 +78,7 @@ public class BaseSwapper implements Swapper {
 		}
 	}
 
-	@Override
-	public void Swapper(Memory m) {
-		// TODO Auto-generated method stub
+	public BaseSwapper(Memory m) {
 		count = 0;
 		mem = m;
 		allocated = new LinkedList<>();
@@ -99,7 +97,6 @@ public class BaseSwapper implements Swapper {
 
 	@Override
 	public int getSwapCount() {
-
 		return count;
 	}
 

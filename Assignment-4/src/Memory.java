@@ -20,6 +20,34 @@ public class Memory {
 		}
 	}
 
+	/*
+	 * Method isFull checks if the memory is full.
+	 * 
+	 * @return boolean true if it is full.
+	 */
+	public boolean isFull() {
+		if (mem.size() == 100) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
+	 * Method hasProcess check if the process is in the memory
+	 * 
+	 * @param pid
+	 *
+	 * @return boolean true if process is in memory, false otherwise.
+	 */
+	public boolean hasProcess(int pid) {
+		for (Process current : mem) {
+			if (current.getProcessID() == pid) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void deleteProcess(Process p) {
 		int psize;
 		int ploc;
