@@ -14,16 +14,41 @@ public class MemorySystem {
 		for (int i=0;i<rsize;i++) {
 			real[i] = Integer.MIN_VALUE;
 		}
+		for (int i=0;i<vsize;i++) {
+			virtual[i] = new MemoryPage();
+		}
 		ActivePage = Integer.MIN_VALUE;
 		time =0;
 	}
 	
-	public void accessMemory(int realPage) {
-		virtual[real[realPage]].setAccessTime(time);
+	public void setVirtual(int vPosition, int realPosition){
+		virtual[vPosition].setReference(real[realPosition]);
+	}
+	
+	public MemoryPage[] getVirTual(){
+		return virtual;
+	}
+	
+	public Integer[] getReal(){
+		return real;
+	}
+	
+	public int isVirtualFull(){
+		int references = 0;
+		for(int i = 0; i < virtual.length; i++){
+			if (virtual[i].getReference() != -1)
+				references++;
+		}
+		
+		return references;
+	}
+	
+	public void accessMemory(int page) {
+		virtual[page].setAccessTime(time);
 	}
 	
 	public Boolean isPageLoaded(int page) {
-		return true;
+		return (virtual[page].getReference() != -1);
 	}
 	
 	public void incrementTime() {
