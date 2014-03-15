@@ -1,6 +1,7 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class Memory {
+public class Memory implements Iterable<Process>{
 	public int size;
 	private ArrayList<Process> mem;
 	private Process nullProcess;
@@ -89,5 +90,11 @@ public class Memory {
 			System.out.print(mem.get(i).name());
 		}
 		System.out.println();
+	}
+
+	@Override
+	public Iterator<Process> iterator() {
+		// TODO Auto-generated method stub
+		return mem.iterator();
 	}
 }

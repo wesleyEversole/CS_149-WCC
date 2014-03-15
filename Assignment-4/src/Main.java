@@ -24,9 +24,10 @@ public class Main {
 			totalSwaps = 0;
 			Swapper swap=null;
 			for(int trial=1; trial <=numTrials; trial++) {
+				Memory m = new Memory(100);
 				switch(sa) {
 				case FirstFit:
-					swap = new FirstFitSwap();
+					swap = new FirstFitSwap(m);
 				}
 				runSwap(swap);
 				totalSwaps += swap.getSwapCount();
