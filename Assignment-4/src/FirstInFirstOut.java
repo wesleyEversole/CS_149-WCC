@@ -7,7 +7,7 @@ public class FirstInFirstOut extends BasePager{
 	public FirstInFirstOut() {
 		super();
 		name = "FIFO";
-		pages = new int[super.memory.realSize];
+		pages = new int[memory.realSize];
 		latest = 0;
 		tail = pages.length - 1;
 	}
@@ -22,13 +22,15 @@ public class FirstInFirstOut extends BasePager{
 			// find page to load
 			int rpage = Integer.MIN_VALUE;
 			// .... algorithm goes here ........
-			if(super.memory.isVirtualFull() == super.memory.realSize){
+			if(memory.areReferencesFull() == memory.realSize){
 				rpage = memory.getVirTual()[pages[0]].getReference();
-				memory.getVirTual()[pages[0]].free();				
+				memory.getVirTual()[pages[0]].free();	
+				System.out.println("Virtual at " + pages[0] + " is evicted");
 			}
 			reorder();
 			pages[tail] = pageNum;	
 			pageFault(rpage,pageNum);
+			super.pageAccess(pageNum);
 		}
 	}
 	

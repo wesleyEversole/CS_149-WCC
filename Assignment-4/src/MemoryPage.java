@@ -19,8 +19,18 @@ public class MemoryPage {
 	}
 	
 	public void free(){
-		setReference(-1);
+		setReference(-2);
+		useCount = 0;
+		lastAccess = 0;
 	}
+	
+	public boolean hasPageBeenUsed(){
+		return (memoryReference == -2);
+	}
+	
+	public boolean hasNoReference(){
+		return (memoryReference == -1);
+	}	
 	
 	public void setAccessTime(int time) {
 		lastAccess = time;
