@@ -33,10 +33,10 @@ public class MemorySystem {
 		return real;
 	}
 	
-	public int isVirtualFull(){
+	public int areReferencesFull(){
 		int references = 0;
 		for(int i = 0; i < virtual.length; i++){
-			if (virtual[i].getReference() != -1)
+			if (!virtual[i].hasNoReference())
 				references++;
 		}
 		
@@ -44,7 +44,8 @@ public class MemorySystem {
 	}
 	
 	public void accessMemory(int page) {
-		virtual[page].setAccessTime(time);
+		virtual[page].pageHit(time);
+		incrementTime();
 	}
 	
 	public Boolean isPageLoaded(int page) {
