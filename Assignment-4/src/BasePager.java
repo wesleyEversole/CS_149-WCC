@@ -23,7 +23,7 @@ public class BasePager implements Pager {
 		hits++;
 		memory.accessMemory(pageNum);
 		for(int i = 0; i < memory.virtualSize; i++){
-			if(memory.getVirTual()[i].hasNoReference() || memory.getVirTual()[i].hasPageBeenUsed()){
+			if(memory.getVirTual()[i].hasNoReference()){
 				System.out.println("VM[" + i +  "] ---> ----" );
 			}
 			else{
@@ -38,17 +38,8 @@ public class BasePager implements Pager {
 	}
 
 	public void pageFault(int rpage, int pageNum) {
-		int numberOfReferences = memory.areReferencesFull();
-		if(numberOfReferences < memory.realSize){
-			memory.getVirTual()[pageNum].setReference(numberOfReferences);
-			System.out.println("Page " + pageNum + " refers to page frame " + numberOfReferences);
-		}
-		else{
-			memory.getVirTual()[pageNum].setReference(rpage);
-			System.out.println("Page " + pageNum + " refers to page frame " + rpage);
-
-		}
-
+		memory.getVirTual()[pageNum].setReference(rpage);
+		System.out.println("Page " + pageNum + " refers to page frame " + rpage);
 	}
 
 	public String name() {
