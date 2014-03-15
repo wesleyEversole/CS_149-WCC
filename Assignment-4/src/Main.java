@@ -25,9 +25,17 @@ public class Main {
 			Swapper swap=null;
 			for(int trial=1; trial <=numTrials; trial++) {
 				Memory m = new Memory(100);
+				System.out.println("Run swapping algorithm "+sa);
 				switch(sa) {
 				case FirstFit:
 					swap = new FirstFitSwap(m);
+				case BestFit:
+					swap = new BestFit(m);
+				case NextFit:
+					swap = new NextFitSwap(m);
+				default:
+					System.err.println("Illegal swapping algorithm "+ swap);
+					System.exit(666);
 				}
 				runSwap(swap);
 				totalSwaps += swap.getSwapCount();
@@ -56,6 +64,8 @@ public class Main {
 			System.out.println();
 			
 			for (int trial=1; trial <=numberTrials; trial++) {
+				// only RandomPick is checked in....
+				// comment out the cases you do not need for now to debug.
 				switch(pa) {
 				case FirstInFirstOut:
 					pager = new FirstInFirstOut();
@@ -72,6 +82,8 @@ public class Main {
 				case RandomPick:
 					pager = new RandomPick();
 					break;
+				default:
+					pager = new RandomPick();
 				}
 				runPager(pager,numberPageReferences);
 				hitRatio = (pager.getHits()*1.0)/(numberPageReferences*1.0);
