@@ -21,7 +21,7 @@ public class MemoryPage {
 	public void free(){
 		setReference(-1);
 		useCount = 0;
-		lastAccess = 0;
+		lastAccess = Integer.MIN_VALUE;
 	}
 	
 	public boolean hasNoReference(){
