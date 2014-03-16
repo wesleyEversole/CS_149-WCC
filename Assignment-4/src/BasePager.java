@@ -22,33 +22,23 @@ public class BasePager implements Pager {
 		}
 		hits++;
 		memory.accessMemory(pageNum);
-		for(int i = 0; i < memory.virtualSize; i++){
-			if(memory.getVirTual()[i].hasNoReference() || memory.getVirTual()[i].hasPageBeenUsed()){
-				System.out.println("VM[" + i +  "] ---> ----" );
-			}
-			else{
-				System.out.print("VM[" + i +  "] ---> RM[" + memory.getVirTual()[i].getReference() + "]");
-				System.out.print("    Use Count: " + memory.getVirTual()[i].getFrequency());				
-				System.out.println("    Last Accessed: " + memory.getVirTual()[i].getLastUse());				
-
-			}
-			
-		}
-		System.out.println();
 	}
 
 	public void pageFault(int rpage, int pageNum) {
-		int numberOfReferences = memory.areReferencesFull();
-		if(numberOfReferences < memory.realSize){
-			memory.getVirTual()[pageNum].setReference(numberOfReferences);
-			System.out.println("Page " + pageNum + " refers to page frame " + numberOfReferences);
+		if (rpage <0 || rpage>= rSize|| pageNum<0 || pageNum>= vSize) {
+			System.err.println("Illegal page fault at real page " + rpage + " for virtual page "+pageNum);
+			System.exit(666);
 		}
-		else{
-			memory.getVirTual()[pageNum].setReference(rpage);
-			System.out.println("Page " + pageNum + " refers to page frame " + rpage);
+		
+		int currentVpage = memory.getReal()[rpage];
 
+		if (currentVpage>=0 && currentVpage<vSize) {
+			// we need to swap a memory page out
+			System.out.println("Swap virtual page "+currentVpage+" out from real page " + rpage);
+			memory.unloadReal(rpage);
 		}
-
+		System.out.println("Swap virtual page " + pageNum+ " into real page "+ rpage);
+		memory.loadReal(rpage, pageNum);
 	}
 
 	public String name() {

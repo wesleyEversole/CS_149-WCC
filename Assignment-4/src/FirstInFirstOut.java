@@ -1,44 +1,35 @@
-public class FirstInFirstOut extends BasePager{
-	
+public class FirstInFirstOut extends BasePager {
+
 	int[] pages;
-	int latest;
 	int tail;
-	
+	int head;
+
 	public FirstInFirstOut() {
 		super();
 		name = "FIFO";
 		pages = new int[memory.realSize];
-		latest = 0;
 		tail = pages.length - 1;
+		head = 0;
 	}
 
 	@Override
 	public void pageAccess(int pageNum) {
-		
-		if (isPageInReal(pageNum))  {
-			super.pageAccess(pageNum);
-			// page is already loaded
-		} else {
+		super.pageAccess(pageNum);
+		if (!isPageInReal(pageNum)) {
 			// find page to load
-			int rpage = Integer.MIN_VALUE;
-			// .... algorithm goes here ........
-			if(memory.areReferencesFull() == memory.realSize){
-				rpage = memory.getVirTual()[pages[0]].getReference();
-				memory.getVirTual()[pages[0]].free();	
-				System.out.println("Virtual at " + pages[0] + " is evicted");
-			}
-			reorder();
-			pages[tail] = pageNum;	
-			pageFault(rpage,pageNum);
-			super.pageAccess(pageNum);
+			loadPage(pageNum);
 		}
 	}
-	
-	//remove head (pages[0])
-	void reorder(){
-		for(int i = 0; i < pages.length - 1; i++){
-			pages[i] = pages[i+1];
+
+	// remove head (pages[0])
+	private int loadPage(int vpage) {
+		if (head > tail) {
+			// real memory filled we need to page fault
+			head = 0;
 		}
+
+		pageFault(head, vpage);
+		return head++;
 	}
-	
+
 }

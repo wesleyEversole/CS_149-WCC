@@ -7,14 +7,11 @@ public class RandomPick extends BasePager {
 
 	@Override
 	public void pageAccess(int pageNum) {
-
-		if (isPageInReal(pageNum)) {
-			super.pageAccess(pageNum);
-			// page is already loaded
-		} else {
-			// find page to load
-			int rpage = Integer.MIN_VALUE;
-			pageNum = (int) Math.floor((Math.random() * memory.realSize));
+		super.pageAccess(pageNum); // mark virtual page as accessed now
+		if (!isPageInReal(pageNum)) {
+			// Load this page into a random real page
+			int rpage = (int) Math.floor((Math.random() * memory.realSize));
+			// load 
 			pageFault(rpage, pageNum);
 		}
 	}
