@@ -92,6 +92,7 @@ public class Main {
 				totalHitRatio += hitRatio;
 			}
 			System.out.println(pager.name()+ " Average Hit Ratio "+ totalHitRatio/numberTrials);
+			System.out.println("=======================================================================");
 		}
 		
 	}

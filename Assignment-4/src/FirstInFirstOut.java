@@ -25,7 +25,6 @@ public class FirstInFirstOut extends BasePager{
 			int numberOfReferences = memory.areReferencesFull();
 			if(numberOfReferences < memory.realSize){
 				pageFault(numberOfReferences, pageNum);
-
 			}
 			else {
 				rpage = memory.getVirTual()[pages[0]].getReference();

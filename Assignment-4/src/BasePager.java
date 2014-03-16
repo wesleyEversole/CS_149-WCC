@@ -23,24 +23,12 @@ public class BasePager implements Pager {
 		}
 		hits++;
 		memory.accessMemory(pageNum);
-		for(int i = 0; i < memory.virtualSize; i++){
-			if(memory.getVirTual()[i].hasNoReference()){
-				System.out.println("VM[" + i +  "] ---> ----" );
-			}
-			else{
-				System.out.print("VM[" + i +  "] ---> RM[" + memory.getVirTual()[i].getReference() + "]");
-				System.out.print("    Use Count: " + memory.getVirTual()[i].getFrequency());				
-				System.out.println("    Last Accessed: " + memory.getVirTual()[i].getLastUse());				
-
-			}
-			
-		}
-		System.out.println();
 	}
 
 	public void pageFault(int rpage, int pageNum) {
 		memory.getVirTual()[pageNum].setReference(rpage);
 		System.out.println("Page " + pageNum + " refers to page frame " + rpage);
+		hits--;
 	}
 
 	public String name() {
