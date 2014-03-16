@@ -16,7 +16,8 @@ public class LeastRecentlyUsed extends BasePager {
 			// .... algorithm goes here ........
 			int numberOfReferences = memory.areReferencesFull();
 			if(numberOfReferences < memory.realSize){
-				pageFault(numberOfReferences, pageNum);
+				memory.loadReal(numberOfReferences, pageNum);
+				hits--;
 			}
 			else {
 				int index = 0;
@@ -29,7 +30,6 @@ public class LeastRecentlyUsed extends BasePager {
 				}
 				rpage = memory.getVirTual()[index].getReference();
 				memory.getVirTual()[index].free();	
-				System.out.println("Virtual at " + index + " is evicted");
 				pageFault(rpage,pageNum);
 			}
 			super.pageAccess(pageNum);

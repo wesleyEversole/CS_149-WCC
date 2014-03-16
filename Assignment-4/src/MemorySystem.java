@@ -69,6 +69,7 @@ public class MemorySystem {
 	
 	public void loadReal(int rpage, int virtualPage) {
 		// copy virtual page to real page
+		System.out.println("Copy virtual page " + virtualPage + " to real page " + rpage);
 		real[rpage] = virtualPage;
 		virtual[virtualPage].setReference(rpage);
 	}
@@ -76,6 +77,7 @@ public class MemorySystem {
 	public void unloadReal(int rpage) {
 		writeBack(rpage);
 		int virtualPage = real[rpage];
+		if (virtualPage <0) return;
 		virtual[virtualPage].setReference(Integer.MIN_VALUE);
 	}
 	

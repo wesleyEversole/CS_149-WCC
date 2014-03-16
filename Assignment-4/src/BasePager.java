@@ -26,8 +26,11 @@ public class BasePager implements Pager {
 	}
 
 	public void pageFault(int rpage, int pageNum) {
+		System.out.println("Virtual page " + memory.getReal()[rpage]+" at real page "+rpage + " is evicted");
 		memory.getVirTual()[pageNum].setReference(rpage);
-		System.out.println("Page " + pageNum + " refers to page frame " + rpage);
+
+		memory.unloadReal(rpage);
+		memory.loadReal(rpage, pageNum);
 		hits--;
 	}
 

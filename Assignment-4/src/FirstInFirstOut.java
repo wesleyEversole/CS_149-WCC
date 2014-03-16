@@ -24,12 +24,13 @@ public class FirstInFirstOut extends BasePager{
 			// .... algorithm goes here ........
 			int numberOfReferences = memory.areReferencesFull();
 			if(numberOfReferences < memory.realSize){
-				pageFault(numberOfReferences, pageNum);
+				memory.loadReal(numberOfReferences, pageNum);
+				hits--;
 			}
 			else {
-				rpage = memory.getVirTual()[pages[0]].getReference();
-				memory.getVirTual()[pages[0]].free();	
-				System.out.println("Virtual at " + pages[0] + " is evicted");
+				int index = 0;
+				rpage = memory.getVirTual()[pages[index]].getReference();
+				memory.getVirTual()[pages[index]].free();	
 				pageFault(rpage,pageNum);
 			}
 			reorder();
