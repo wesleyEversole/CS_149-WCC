@@ -9,6 +9,7 @@ public class BasePager implements Pager {
 	public BasePager() {
 		memory = new MemorySystem(vSize, rSize);
 		name = "Base";
+		hits = 0;
 	}
 
 	public int getHits() {
@@ -29,7 +30,7 @@ public class BasePager implements Pager {
 			System.err.println("Illegal page fault at real page " + rpage + " for virtual page "+pageNum);
 			System.exit(666);
 		}
-		
+		hits--;
 		int currentVpage = memory.getReal()[rpage];
 
 		if (currentVpage>=0 && currentVpage<vSize) {
