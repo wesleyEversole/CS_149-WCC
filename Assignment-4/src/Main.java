@@ -62,6 +62,7 @@ public class Main {
 			hitRatio = 0.0;
 			totalHitRatio = 0.0;
 			System.out.println();
+			System.out.println("Page algorithm "+ pa);
 			
 			for (int trial=1; trial <=numberTrials; trial++) {
 				// only RandomPick is checked in....

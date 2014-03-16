@@ -9,6 +9,7 @@ public class BasePager implements Pager {
 	public BasePager() {
 		memory = new MemorySystem(vSize, rSize);
 		name = "Base";
+		hits = 0;
 	}
 
 	public int getHits() {

@@ -46,13 +46,42 @@ public class MemorySystem {
 	public void accessMemory(int page) {
 		virtual[page].pageHit(time);
 		incrementTime();
+		System.out.print("Hit page "+page+" |");
+		for (int i=0; i<realSize; i++) {
+			System.out.print(" R[" + i + "]==V[");
+			if (real[i] <0) {
+				System.out.print("NA");
+			} else {
+				System.out.print(" "+real[i]);
+			}
+			System.out.print("] |");
+		}
+		System.out.println();
 	}
 	
 	public Boolean isPageLoaded(int page) {
-		return (virtual[page].getReference() != -1);
+		return (virtual[page].getReference()>=0);
 	}
 	
 	public void incrementTime() {
 		time++;
 	}
+	
+	public void loadReal(int rpage, int virtualPage) {
+		// copy virtual page to real page
+		real[rpage] = virtualPage;
+		virtual[virtualPage].setReference(rpage);
+	}
+
+	public void unloadReal(int rpage) {
+		writeBack(rpage);
+		int virtualPage = real[rpage];
+		virtual[virtualPage].setReference(Integer.MIN_VALUE);
+	}
+	
+	public void writeBack(int rpage) {
+		// dummy function
+		// real pages are just indexes to virtual so no writeBack operation needed
+	}
+
 }

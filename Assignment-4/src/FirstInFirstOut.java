@@ -1,14 +1,14 @@
 public class FirstInFirstOut extends BasePager{
 	
 	int[] pages;
-	int latest;
+	int head;
 	int tail;
 	
 	public FirstInFirstOut() {
 		super();
 		name = "FIFO";
 		pages = new int[memory.realSize];
-		latest = 0;
+		head = 0;
 		tail = pages.length - 1;
 	}
 
