@@ -61,13 +61,13 @@ public class Process {
 	public void setSize(int size) {
 		// safety check size, only 4,8,16,32 allowed
 		switch (size) {
-		case 4:
+		case 5:
 			;
-		case 8:
+		case 11:
 			;
-		case 16:
+		case 17:
 			;
-		case 32:
+		case 31:
 			break;
 		default:
 			System.err.println("Memory size not in range:" + size);
