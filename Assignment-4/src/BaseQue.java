@@ -58,6 +58,7 @@ public class BaseQue {
 			totalTurnAroundTime += process.getTurnAroundTime();
 		}
 		completedProcesses++;
+		swapper.unload(process);
 	}
 
 	public float averageTurnAround() {

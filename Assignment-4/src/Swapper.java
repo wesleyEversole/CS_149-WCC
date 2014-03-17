@@ -7,6 +7,11 @@ public interface Swapper {
 	 */
 	public Boolean load(Process p);
 	/**
+	 * unloads process from memory and returns to free pool
+	 * @param p process to remove from memory
+	 */
+	public void unload(Process p);
+	/**
 	 * get number of processes swapped into memory
 	 * @return number of processes swapped into memory
 	 */

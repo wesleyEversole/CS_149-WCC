@@ -124,4 +124,10 @@ public class BaseSwapper implements Swapper {
 		deleteProcess(p);
 	}
 
+	@Override
+	public void unload(Process p) {
+		mem.deleteProcess(p);
+		mem.display();
+	}
+
 }

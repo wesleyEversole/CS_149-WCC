@@ -60,6 +60,11 @@ public class Memory implements Iterable<Process>{
 		psize = p.getSize();
 		ploc = p.getLocation();
 
+		if (p.getLocation()<0) {
+			// process not in memory so nothing new to display
+			return;
+		}
+
 		for (int l = ploc; l < ploc + psize; l++) {
 			mem.set(l, nullProcess);
 		}
@@ -85,7 +90,7 @@ public class Memory implements Iterable<Process>{
 		display();
 	}
 
-	private void display() {
+	public void display() {
 		for (int i = 1; i <= size; i++) {
 			System.out.print(mem.get(i).name());
 		}

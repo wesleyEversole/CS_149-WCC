@@ -59,7 +59,9 @@ public class Scheduler {
 		}
 		while (moreToDo) {
 			// add items to run queue as time evolves
+			System.out.println("Current time: "+ currentTime);
 			while (!scheduleList.isEmpty()) {
+				
 
 				if (scheduleList.get(0).getArrival() <= currentTime) {
 					Process p = scheduleList.remove(0);
