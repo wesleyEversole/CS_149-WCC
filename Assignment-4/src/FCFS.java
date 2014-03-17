@@ -6,10 +6,12 @@ import java.util.ArrayList;
  */
 public class FCFS extends BaseQue implements QueInterface {
 	private ArrayList<Process> processQue;
+	private int lastProcessInMemory;
 	
 	public FCFS() {
 		super();
 		processQue = new ArrayList<Process>();
+		lastProcessInMemory = Integer.MIN_VALUE;
 	}
 	// First Come First Served
 	/*
@@ -20,8 +22,30 @@ public class FCFS extends BaseQue implements QueInterface {
 	@Override
 	public void add(Process p) {
 		processQue.add(p);
+		loadProcess();
 	}
 
+	public void loadProcess() {
+		// attempt to fill memory with processes
+		int idx;
+		if (lastProcessInMemory<0) {
+			idx = 0;
+		} else {
+			idx = lastProcessInMemory;
+		}
+		Boolean loadSucceeded = true;
+		idx--;
+		while (loadSucceeded) {
+			idx++;
+			if (idx<processQue.size()) {
+				loadSucceeded = swapper.load(processQue.get(idx));
+			} else {
+				loadSucceeded = false;
+				idx = processQue.size();
+			}
+		}
+		lastProcessInMemory = idx;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -30,12 +54,20 @@ public class FCFS extends BaseQue implements QueInterface {
 	@Override
 	public void next(float quanta) {
 		if (processQue.size()==0) {
-			System.out.print("[  ] ");
+			if (debug) {
+				// Code for process scheduling debug
+				System.out.print(" [   Startup          ] |");
+			}
 			return;
 		}
 		Process p = processQue.get(0);
+		loadProcess();
 		// swap process into memory (if needed)
-		swapper.load(p);
+		if (debug) {
+			p.debugOn();
+		} else  {
+			p.debugOff();
+		}
 		p.run(quanta);
 		if (p.getRunningT()>0.0f) {
 		} else {

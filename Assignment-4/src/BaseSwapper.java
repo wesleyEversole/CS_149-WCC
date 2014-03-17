@@ -23,9 +23,9 @@ public class BaseSwapper implements Swapper {
 		int idx = 0;
 		MemoryBlock mblast, mbcur;
 		Iterator iter = free.iterator();
-		int mbloc = mb.getStart();
-		int mbsize = mb.getSize();
-		int mbend = mb.getEnd();
+		Integer mbloc = mb.getStart();
+		Integer mbsize = mb.getSize();
+		Integer mbend = mb.getEnd();
 		mblast = null;
 		mbcur = null;
 		while (iter.hasNext()) {
@@ -88,11 +88,25 @@ public class BaseSwapper implements Swapper {
 		free.add(mb);
 	}
 
-	@Override
-	public void load(Process p) {
-		if (p.getLocation() < 0) {
-			count++;
+	public Boolean isMemoryAvailable(int processSize) {
+		// not efficient as the swapper has to redo this same
+		//   search
+		for (MemoryBlock mb: free) {
+			if (processSize <=mb.getSize()) {
+				return true;
+			}
 		}
+		return false;
+	}
+	
+	@Override
+	public Boolean load(Process p) {
+		return false;
+	}
+	public Boolean load(Process p,int ploc) {
+        count++;
+        mem.addProcess(p,ploc);
+		return false;
 	}
 
 	@Override
@@ -103,6 +117,11 @@ public class BaseSwapper implements Swapper {
 	@Override
 	public String name() {
 		return "Base";
+	}
+
+	@Override
+	public void swap(Process p) {
+		deleteProcess(p);
 	}
 
 }

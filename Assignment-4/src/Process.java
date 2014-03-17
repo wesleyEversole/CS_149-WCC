@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -27,10 +28,21 @@ public class Process {
 	private MemoryBlock memB;
 	private int sizeMB;
 	private int memLoc;
+	private Boolean debug;
+	final static private ArrayList<Integer> legalSizes = new ArrayList<>(Arrays.asList(5,11,17,31));
+
+	public void debugOn() {
+		debug = true;
+	}
+
+	public void debugOff() {
+		debug = false;
+	}
 
 	public MemoryBlock getMemoryBlock() {
 		return memB;
 	}
+
 	public void setLocation(int memoryLocation) {
 		memLoc = memoryLocation;
 	}
@@ -51,29 +63,21 @@ public class Process {
 	}
 
 	public int getLocation() {
-		if (memB==null) {
-		    return memLoc;	
+		if (memB == null) {
+			return memLoc;
 		} else {
 			return memB.getStart();
 		}
 	}
 
 	public void setSize(int size) {
-		// safety check size, only 4,8,16,32 allowed
-		switch (size) {
-		case 5:
-			;
-		case 11:
-			;
-		case 17:
-			;
-		case 31:
-			break;
-		default:
-			System.err.println("Memory size not in range:" + size);
-			System.exit(1);
+		if (legalSizes.contains(size)) {
+			sizeMB = size;
+		} else {
+			System.err.println("Illegal process size requested: "+ size);
+			Thread.dumpStack();
+			System.exit(666);
 		}
-		sizeMB = size;
 	}
 
 	public int getSize() {
@@ -91,6 +95,7 @@ public class Process {
 			System.err
 					.println("System error- trying to set pid of null process to"
 							+ pid + " Process is " + this);
+			Thread.dumpStack();
 		}
 	}
 
@@ -128,7 +133,7 @@ public class Process {
 		runningT = xrun;
 		lastQuanta = 0.0f;
 		pid = 0;
-		memB=null;
+		memB = null;
 	}
 
 	private float round10th(float f) {
@@ -184,7 +189,7 @@ public class Process {
 	}
 
 	private int sizeMBMaker() {
-		return (int) Math.pow(2.0, Math.ceil(Math.random() * 4.0) + 1.0);
+		return legalSizes.get((int) (Math.floor(Math.random() * legalSizes.size())));
 	}
 
 	private int priorityMaker() {
@@ -214,7 +219,10 @@ public class Process {
 		if (Float.isNaN(firstRun)) {
 			firstRun = quanta;
 		}
-		System.out.print(this);
+		if (debug) {
+			// debug process scheduling
+			System.out.print(this);
+		}
 	}
 
 	public float getResponseTime() {
@@ -229,8 +237,13 @@ public class Process {
 
 	@Override
 	public String toString() {
-		return String.format("P%3d(%s) M(%d) Size(%d)", pid, name(),
-				getLocation(), getSize());
+		if (getLocation() < 0) {
+			return String.format(" P%3d(%s) M(NA) Size(%2d) |", pid, name(),
+					getSize());
+		} else {
+			return String.format(" P%3d(%s) M(%d) Size(%2d) |", pid, name(),
+					getLocation(), getSize());
+		}
 	}
 
 }

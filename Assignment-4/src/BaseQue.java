@@ -28,11 +28,20 @@ public class BaseQue {
 
 	protected Swapper swapper;
 	protected Memory memory;
+	protected Boolean debug;
+	
+	public void debugOn() {
+		debug=true;
+	}
+	public void debugOff() {
+		debug=false;
+	}
 	public BaseQue() {
 		totalWait = 0.0f;
 		completedProcesses = 0;
 		totalResponseTime = 0.0f;
 		totalTurnAroundTime = 0.0f;
+		debug = true;
 	}
 	
 	public void setSwapper(Swapper s) {

@@ -26,4 +26,6 @@ public interface QueInterface {
 	public float averageWaitTime() ;
 	public float averageResponseTime() ;
 	public int throughput(); 
+	public void debugOn();
+	public void debugOff();
 }

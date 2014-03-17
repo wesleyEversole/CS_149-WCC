@@ -14,6 +14,7 @@ public class Main {
 		for (int process = 0; process < 300; process++) {
 			s.add(new Process());
 		}
+		//s.debugOn(); // enable scheduler debugging
 		s.exec(q);
 	}
 	
@@ -29,10 +30,13 @@ public class Main {
 				switch(sa) {
 				case FirstFit:
 					swap = new FirstFitSwap(m);
+					break;
 				case BestFit:
 					swap = new BestFit(m);
+					break;
 				case NextFit:
 					swap = new NextFitSwap(m);
+					break;
 				default:
 					System.err.println("Illegal swapping algorithm "+ swap);
 					System.exit(666);
@@ -100,11 +104,11 @@ public class Main {
 		// TODO Auto-generated method stub
 		System.out.println("Assignment 4 - by West Code Custom");
 		System.out.println("Swapping Algorithm Tests");
-		//swapSet();
+		swapSet();
 		System.out.println();
 		System.out.println(header);
 		System.out.println("Paging Algorithm Tests");
-		pageSet();
+		//pageSet();
 	}
 
 }

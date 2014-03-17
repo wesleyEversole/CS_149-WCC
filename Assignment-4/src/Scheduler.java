@@ -15,12 +15,28 @@ public class Scheduler {
 	private int pid;
 	private ArrayList<Process> scheduleList;
 	private QueInterface myQ;
+	private Boolean debug;
+
+	public void debugOn() {
+		debug = true;
+		if (myQ != null) {
+			myQ.debugOn();
+		}
+	}
+
+	public void debugOff() {
+		debug = false;
+		if (myQ != null) {
+			myQ.debugOff();
+		}
+	}
 
 	public Scheduler() {
 		currentTime = 0;
 		pid = 0;
 		scheduleList = new ArrayList<Process>();
 		myQ = null;
+		debug = false;
 	}
 
 	public void add(Process p) {
@@ -36,6 +52,11 @@ public class Scheduler {
 				return Float.compare(obj1.getArrival(), obj2.getArrival());
 			}
 		});
+		if (debug) {
+			myQ.debugOn();
+		} else {
+			myQ.debugOff();
+		}
 		while (moreToDo) {
 			// add items to run queue as time evolves
 			while (!scheduleList.isEmpty()) {
@@ -50,14 +71,20 @@ public class Scheduler {
 				}
 			}
 			if (currentTime % 10 == 0) {
-				System.out.println();
-				System.out.print(String.format("%3.0f |", currentTime));
+				if (debug) {
+					// scheduler debug
+					System.out.println();
+					System.out.print(String.format("%3.0f |", currentTime));
+				}
 			}
 			if (currentTime != 100.0f) {
 				q.next(currentTime);
 			} else {
 				q.shutdown();
-				System.out.print("[  ] ");
+				if (debug) {
+					// scheduler debug
+					System.out.print(" [   Shutdown         ] |");
+				}
 			}
 			currentTime += 1.0f;
 

@@ -16,9 +16,10 @@ public class Memory implements Iterable<Process>{
 		nullProcess = new Process();
 		nullProcess.setProcessID(Integer.MIN_VALUE);
 
-		for (int i = 1; i <= size; i++) {
-			mem.add(i, nullProcess);
+		for (int i = 0; i <= size; i++) {
+			mem.add(nullProcess);
 		}
+		this.size = size;
 	}
 
 	/*
@@ -67,12 +68,11 @@ public class Memory implements Iterable<Process>{
 	}
 
 	public void addProcess(Process p, int ploc) {
-		int psize;
 		if (p.getProcessID() == Integer.MIN_VALUE) {
 			// ignore request
 			return;
 		}
-		psize = p.getSize();
+		int psize = p.getSize();
 		p.setLocation(ploc);
 
 		for (int l = ploc; l < ploc + psize; l++) {

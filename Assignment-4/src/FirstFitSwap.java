@@ -1,3 +1,5 @@
+import com.sun.org.apache.bcel.internal.generic.ALOAD;
+
 public class FirstFitSwap extends BaseSwapper {
 
 	public FirstFitSwap(Memory m) {
@@ -12,14 +14,27 @@ public class FirstFitSwap extends BaseSwapper {
 	 * @param p loading process.
 	 */
 	@Override
-	public void load(Process p) {
-		super.load(p);
-		if (!mem.hasProcess(p.getProcessID()) && mem.isFull()) {
-			for (Process memp: mem)
-			{
-				
+	public Boolean load(Process p) {
+		int processSize = p.getSize();
+		if (isMemoryAvailable(processSize)) {
+			MemoryBlock mb;
+			for (int blockNum=0; blockNum<free.size(); blockNum++) {
+				mb=free.get(blockNum);
+				if (processSize <=mb.getSize()) {
+					// load process into first available memory location
+					MemoryBlock pmb = new MemoryBlock(mb.getStart(), processSize);
+					allocated.add(pmb);
+					mb.setStart(pmb.getEnd()+1);
+					mb.setSize(mb.getSize()-processSize);
+
+					//System.out.println();
+					//System.out.println(p);
+					super.load(p,pmb.getStart());
+					return true;
+				}
 			}
 		}
+		return false;
 	}
 
 	@Override

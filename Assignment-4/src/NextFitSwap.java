@@ -5,8 +5,9 @@ public class NextFitSwap extends BaseSwapper {
 		// TODO Auto-generated constructor stub
 	}
 	@Override
-	public void load(Process p) {
+	public Boolean load(Process p) {
 		super.load(p);
+		return false;
 	}
 	@Override
 	public String name() {
