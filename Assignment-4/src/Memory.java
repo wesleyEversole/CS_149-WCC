@@ -5,6 +5,7 @@ public class Memory implements Iterable<Process>{
 	public int size;
 	private ArrayList<Process> mem;
 	private Process nullProcess;
+	private double time;
 
 	public Memory(int size) {
 		if (size < 0 || size > 100) {
@@ -20,8 +21,16 @@ public class Memory implements Iterable<Process>{
 			mem.add(nullProcess);
 		}
 		this.size = size;
+		time = 0.0;
 	}
 
+	/**
+	 * Save simulation time for display
+	 * @param t current time as double
+	 */
+	public void setTime(double t) {
+		time = t;
+	}
 	/*
 	 * Method isFull checks if the memory is full.
 	 * 
@@ -68,8 +77,6 @@ public class Memory implements Iterable<Process>{
 		for (int l = ploc; l < ploc + psize; l++) {
 			mem.set(l, nullProcess);
 		}
-
-		display();
 	}
 
 	public void addProcess(Process p, int ploc) {
@@ -91,6 +98,7 @@ public class Memory implements Iterable<Process>{
 	}
 
 	public void display() {
+		System.out.printf("% 3.0f ",time);
 		for (int i = 1; i <= size; i++) {
 			System.out.print(mem.get(i).name());
 		}
@@ -99,7 +107,6 @@ public class Memory implements Iterable<Process>{
 
 	@Override
 	public Iterator<Process> iterator() {
-		// TODO Auto-generated method stub
 		return mem.iterator();
 	}
 }

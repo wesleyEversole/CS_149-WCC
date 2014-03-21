@@ -59,7 +59,7 @@ public class Scheduler {
 		}
 		while (moreToDo) {
 			// add items to run queue as time evolves
-			System.out.println("Current time: "+ currentTime);
+			//System.out.println("Current time: "+ currentTime);
 			while (!scheduleList.isEmpty()) {
 				
 
@@ -95,7 +95,7 @@ public class Scheduler {
 			// if (currentTime>200) break;
 		}
 		System.out.println();
-		displayRunStatistics();
+		//displayRunStatistics();
 	}
 
 	public float averageTurnAround(int i) {
