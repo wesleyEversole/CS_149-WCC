@@ -1,29 +1,32 @@
-public class BestFit extends BaseSwapper {	
+public class BestFit extends BaseSwapper {
 	public BestFit(Memory m) {
 		super(m);
 		// TODO Auto-generated constructor stub
 	}
+
 	@Override
 	public Boolean load(Process p) {
 		int processSize = p.getSize();
 		if (isMemoryAvailable(processSize)) {
-			MemoryBlock mb;
-			for (int blockNum=0; blockNum<free.size(); blockNum++) {
-				mb=free.get(blockNum);
-				//find smallest block here 
+			MemoryBlock smallest = free.get(0);
+			for (int blockNum = 1; blockNum < free.size(); blockNum++) {
+				//find smallest that fits
+				if (free.get(blockNum).getSize() < smallest.getSize()
+						&& processSize <= free.get(blockNum).getSize()) {
+					smallest = free.get(blockNum);
+				}
 			}
-			if (processSize <=mb.getSize()) {
-				// load process into first available memory location
-				MemoryBlock pmb = new MemoryBlock(mb.getStart(), processSize);
-				allocated.add(pmb);
-				mb.setStart(pmb.getEnd()+1);
-				mb.setSize(mb.getSize()-processSize);
-				super.load(p,pmb.getStart());
-				return true;
-			}
+			// load process into first available memory location
+			MemoryBlock pmb = new MemoryBlock(smallest.getStart(), processSize);
+			allocated.add(pmb);
+			smallest.setStart(pmb.getEnd() + 1);
+			smallest.setSize(smallest.getSize() - processSize);
+			super.load(p, pmb.getStart());
+			return true;
 		}
 		return false;
 	}
+
 	@Override
 	public String name() {
 		return "Best Fit";

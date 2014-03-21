@@ -20,12 +20,14 @@ public class NextFitSwap extends BaseSwapper {
 					allocated.add(pmb);
 					mb.setStart(pmb.getEnd()+1);
 					mb.setSize(mb.getSize()-processSize);
+					lastlocation = mb.getStart();
+					super.load(p, pmb.getStart());
 				}
-
 			}
 			if (lastlocation == free.size()) {
 				lastlocation = 0;
 			}
+			return true;
 		}
 		return false;
 	}
