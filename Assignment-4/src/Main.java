@@ -11,7 +11,7 @@ public class Main {
 		QueInterface q = new FCFS();
 		q.setSwapper(swap);
 		Scheduler s = new Scheduler();
-		for (int process = 0; process < 300; process++) {
+		for (int process = 0; process < 150; process++) {
 			s.add(new Process());
 		}
 		//s.debugOn(); // enable scheduler debugging
@@ -108,7 +108,7 @@ public class Main {
 		System.out.println();
 		System.out.println(header);
 		System.out.println("Paging Algorithm Tests");
-		//pageSet();
+		pageSet();
 	}
 
 }

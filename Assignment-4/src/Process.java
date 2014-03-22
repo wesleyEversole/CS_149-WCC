@@ -126,7 +126,7 @@ public class Process {
 	public Process() {
 		// just generated code for now.
 		priority = priorityMaker();
-		arrival = round10th(arrivalMaker());
+		arrival = 0;
 		xrun = round10th(xrunMaker());
 		setSize(sizeMBMaker());
 		setLocation(Integer.MIN_VALUE);
@@ -219,10 +219,6 @@ public class Process {
 		if (Float.isNaN(firstRun)) {
 			firstRun = quanta;
 		}
-		if (debug) {
-			// debug process scheduling
-			System.out.print(this);
-		}
 	}
 
 	public float getResponseTime() {
@@ -244,6 +240,14 @@ public class Process {
 			return String.format(" P%3d(%s) M(%d) Size(%2d) |", pid, name(),
 					getLocation(), getSize());
 		}
+	}
+
+	public double getLastQuanta() {
+		return lastQuanta;
+	}
+
+	public void setMemoryBlock(MemoryBlock mb) {
+		memB = mb;
 	}
 
 }

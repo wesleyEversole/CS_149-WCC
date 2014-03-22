@@ -26,10 +26,7 @@ public class FirstFitSwap extends BaseSwapper {
 					allocated.add(pmb);
 					mb.setStart(pmb.getEnd()+1);
 					mb.setSize(mb.getSize()-processSize);
-
-					//System.out.println();
-					//System.out.println(p);
-					super.load(p,pmb.getStart());
+					super.load(p,pmb);
 					return true;
 				}
 			}

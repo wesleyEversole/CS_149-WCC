@@ -85,20 +85,19 @@ public class Memory implements Iterable<Process>{
 			return;
 		}
 		int psize = p.getSize();
-		p.setLocation(ploc);
-
 		for (int l = ploc; l < ploc + psize; l++) {
-			if (mem.get(l) != nullProcess) {
-				System.err.println("Illegal process add to location " + ploc
-						+ " for process " + ploc);
-			}
+//			if (mem.get(l) != nullProcess) {
+//				System.err.println("Illegal process add to location " + ploc
+//						+ " for process " + p.name());
+//			}
 			mem.set(l, p);
 		}
-		display();
+		p.setLocation(ploc);
+		display(time);
 	}
 
-	public void display() {
-		System.out.printf("% 3.0f ",time);
+	public void display(double time) {
+		//System.out.printf("% 3.0f ",time);
 		for (int i = 1; i <= size; i++) {
 			System.out.print(mem.get(i).name());
 		}

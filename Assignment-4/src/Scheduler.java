@@ -57,45 +57,21 @@ public class Scheduler {
 		} else {
 			myQ.debugOff();
 		}
-		while (moreToDo) {
-			// add items to run queue as time evolves
-			//System.out.println("Current time: "+ currentTime);
+		currentTime = 0.0f;
+		while (currentTime<60.0f) {
+			System.out.println("[Time:"+currentTime+"s]");
 			while (!scheduleList.isEmpty()) {
-				
-
 				if (scheduleList.get(0).getArrival() <= currentTime) {
 					Process p = scheduleList.remove(0);
-					p.setLastQuanta(currentTime);
-					p.setActualArrival(currentTime);
-					q.add(p);
+					q.add(p,currentTime);
 				} else {
 					break;
 				}
 			}
-			if (currentTime % 10 == 0) {
-				if (debug) {
-					// scheduler debug
-					System.out.println();
-					System.out.print(String.format("%3.0f |", currentTime));
-				}
-			}
-			if (currentTime != 100.0f) {
-				q.next(currentTime);
-			} else {
-				q.shutdown();
-				if (debug) {
-					// scheduler debug
-					System.out.print(" [   Shutdown         ] |");
-				}
-			}
+			q.next(currentTime);
 			currentTime += 1.0f;
-
-			moreToDo = !q.isEmpty() || currentTime < 100.00f;
-			// debug only
-			// if (currentTime>200) break;
 		}
 		System.out.println();
-		//displayRunStatistics();
 	}
 
 	public float averageTurnAround(int i) {

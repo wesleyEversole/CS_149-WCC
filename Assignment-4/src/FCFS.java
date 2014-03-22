@@ -20,12 +20,14 @@ public class FCFS extends BaseQue implements QueInterface {
 	 * @see SchedulingQue#add(Process)
 	 */
 	@Override
-	public void add(Process p) {
+	public void add(Process p, float quanta) {
+		p.setLastQuanta(quanta);
+		p.setActualArrival(quanta);
 		processQue.add(p);
-		loadProcess();
+		loadProcess(quanta);
 	}
 
-	public void loadProcess() {
+	public void loadProcess(float quanta) {
 		// attempt to fill memory with processes
 		int idx;
 		if (lastProcessInMemory<0) {
@@ -45,6 +47,7 @@ public class FCFS extends BaseQue implements QueInterface {
 			}
 		}
 		lastProcessInMemory = idx;
+		//System.out.println("Lastprocess "+lastProcessInMemory);
 	}
 	/*
 	 * (non-Javadoc)
@@ -60,20 +63,25 @@ public class FCFS extends BaseQue implements QueInterface {
 			}
 			return;
 		}
-		Process p = processQue.get(0);
-		loadProcess();
-		// swap process into memory (if needed)
-		if (debug) {
-			p.debugOn();
-		} else  {
-			p.debugOff();
+		loadProcess(quanta); // fill memory with processes
+		
+		Process p;
+		// execute all processes in memory
+		//  remove any process that completes
+		for( int pid=lastProcessInMemory-1; pid >=0; pid--) {
+			
+			p = processQue.get(pid);
+			//System.out.println("Execute process "+pid+":"+p.name()+" time remaining "+p.runningT);
+			p.setLastQuanta(quanta);
+			p.run(quanta);
+			if (p.getRunningT()>0.0f) {
+			} else {
+				closeProcess(p);
+				processQue.remove(pid);
+				lastProcessInMemory--;
+				//System.out.println("Lastprocess "+lastProcessInMemory);
+			} 
 		}
-		p.run(quanta);
-		if (p.getRunningT()>0.0f) {
-		} else {
-			closeProcess(p);
-			processQue.remove(0);
-		} 
 	}
 
 	/*
