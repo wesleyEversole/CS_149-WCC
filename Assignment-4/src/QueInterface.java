@@ -9,9 +9,9 @@
 public interface QueInterface {
 	public boolean isPreemptive();
 
-	public void add(Process p);
+	public void add(Process p,float time);
 	
-	public void next(float quanta);
+	public void next(float time);
 
 	public boolean isEmpty();
 	public void setSwapper(Swapper s);
