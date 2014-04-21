@@ -45,7 +45,8 @@ int main(int argc, char *argv[]){
 	while (now.tv_sec<end.tv_sec){
 		r= rand()%3;
 		temp = diff(&start,&now);
-		fprintf(stdout," 0:%06.3f : Child %d Message %d\n",timespec_to_double(temp),childID,count);//fflush(stdout);
+		fprintf(stdout," 0:%06.3f : Child %d Message %d\n",timespec_to_double(temp),childID,count);
+		fflush(stdout);
 		free(temp);
 		count++;
 		sleep(r);
