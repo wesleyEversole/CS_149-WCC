@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <time.h>
+#include <limits.h>
 
 char* getInput() {
 	char buf[128];
@@ -32,7 +33,8 @@ ts *diff(ts *t1, ts *t2) {
 }
 
 int main(int argc, char *argv[]) {
-	FILE *pipe_fd[6];
+	FILE *pipe_fd[6],*fp;
+	fp=fopen("output.txt","w");
 	fd_set set;
 	struct timeval timeout;
 	timeout.tv_sec=30;
@@ -61,11 +63,16 @@ int main(int argc, char *argv[]) {
 
 	// put all the file descriptors into a set
 	FD_ZERO(&set);
-
+    int fds=INT_MIN;
+    int fn =0 ;
 	for (i=0; i<4;i++) {
-		FD_SET(fileno(pipe_fd[i]),&set);
+		fn=fileno(pipe_fd[i]);
+		FD_SET(fn,&set);
+		if(fds< fn){
+			fds=fn;
+		}
 	}
-
+	printf("fds = %d\n",fds);
 
 	ts start;
 	ts now;
@@ -74,14 +81,17 @@ int main(int argc, char *argv[]) {
 	ts *temp;
 	int count = 0;
     int nfd = 0;
-    int fds = 4;
     char *buff[2048];
     char *rv;
     // count<40 debug stop
 	while (count<40) {
-        nfd = select(fds, &set, NULL, NULL,  &timeout);
+		printf("in the while loop\n");
+        nfd = select(fds+1, &set, NULL, NULL,  &timeout);
+        printf("ndf = %d\n", nfd);
 		for (i=0; i<4;i++) {
+			printf("got into he loop\n");
 			if (FD_ISSET(fileno(pipe_fd[i]),&set)) {
+				printf("get to the fget");
 				rv = fgets(*buff,2048,pipe_fd[i]);
 				if (rv==NULL) {
 					FD_CLR(fileno(pipe_fd[i]),&set);
