@@ -41,17 +41,15 @@ int main(int argc, char *argv[]) {
 	fd_set set;
 	struct timeval timeout;
 
-
 	timeout.tv_sec = 30;
 	timeout.tv_usec = 0;
 	//fifth cild
 
-	pid_t child;
+//	pid_t child;
 	int fd[2];
-	int length;
-	char write_message[128];
-	char read_message[128];
-
+//	int length;
+//	char write_message[128];
+//	char read_message[128];
 
 	int i = 0;
 	// bad form but its a lot easier then a loop
@@ -77,10 +75,10 @@ int main(int argc, char *argv[]) {
 	pipe(fd);
 	//if pipe failed
 
-	if (pipe(fd) == -1) {
-		fprintf(stderr, "pipe() failed");
-		return 1;
-	}
+//	if (pipe(fd) == -1) {
+//		fprintf(stderr, "pipe() failed");
+//		return 1;
+//	}
 
 	//forked child process
 	child = fork();
@@ -97,10 +95,8 @@ int main(int argc, char *argv[]) {
 		fds = (fds < fn) ? fn : fds;
 	}
 
-	
-
 	//add child 5 to the set
-	FD_SET(fd, &set);
+//	FD_SET(fd, &set);
 
 	printf("fds = %d\n", fds);
 
@@ -145,30 +141,33 @@ int main(int argc, char *argv[]) {
 					}
 				}
 			}
+//			if (child == 0) {
+//				//child 5 process
+//				//close read end
+//				close(fd[READ]);
+//				ioctl(0, FIONREAD, &length)
+//				length = read(0, buffer, length);
+//				buf[length] = 0;
+//				//still need way to aapendtime
+//				snprintf(write_message, 128, " 0:%06.3f : %s\n",
+//						timespec_to_double(temp), *buff);
+//				//write message to parent
+//				write(fd[WRITE], write_message, strlen(write_message)+1);
+//		}
+
 			count--;
 		} else if (nfd < 0) {
 			// error condition
 			perror("select()");
 
-	temp = diff(&start, &now);
-	clock_gettime(CLOCK_MONOTONIC, &now);
+			temp = diff(&start, &now);
+			clock_gettime(CLOCK_MONOTONIC, &now);
 
-	count++;
-}
-if (child == 0) {
-	//child 5 process
-	//close read end
-	close(fd[READ]);
-	ioctl(0, FIONREAD, &length)
-	length = read(0, buffer, length);
-	buf[length] = 0;
-	//still need way to aapendtime
-	snprintf(write_message, 128, " 0:%06.3f : %s\n", timespec_to_double(temp),
-			*buff);
-	//write message to parent
-write(fd[WRITE], write_message, strlen(write_message)+1);
+			count++;
+		}
+
+		exit(0);
+	}
 }
 
-exit(0);
-}
 
