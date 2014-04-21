@@ -5,6 +5,9 @@
 #include <time.h>
 #include <limits.h>
 
+#define WRITE 1;
+#define READ 0;
+
 char* getInput() {
 	char buf[128];
 	printf("Enter a Message: ");
@@ -37,8 +40,20 @@ int main(int argc, char *argv[]) {
 	fp = fopen("output.txt", "w");
 	fd_set set;
 	struct timeval timeout;
+<<<<<<< HEAD
 	timeout.tv_sec = 0;
 	timeout.tv_usec = 100;
+=======
+	timeout.tv_sec = 30;
+	timeout.tv_usec = 0;
+	//fifth cild
+
+	pid_t child;
+	int fd[2];
+	int length;
+	char write_message[128];
+	char read_message[128];
+>>>>>>> 17913be7bde7cf7a6006bd74e00d8e35fe0457d0
 
 	int i = 0;
 	// bad form but its a lot easier then a loop
@@ -61,6 +76,16 @@ int main(int argc, char *argv[]) {
 	//pclose(pipe_fd[3]);
 	//the call to build child five should go here
 	//child five will have to use the long format for piping.
+	pipe(fd);
+	//if pipe failed
+
+	if (pipe(fd) == -1) {
+		fprintf(stderr, "pipe() failed");
+		return 1;
+	}
+
+	//forked child process
+	child = fork();
 
 	// put all the file descriptors into a set
 	FD_ZERO(&set);
@@ -68,10 +93,22 @@ int main(int argc, char *argv[]) {
 	int fn = 0;
 	for (i = 0; i < 4; i++) {
 		fn = fileno(pipe_fd[i]);
+<<<<<<< HEAD
 		printf("File %d for i=%d\n", fn, i);
 		FD_SET(fn, &set);
 		fds = (fds < fn) ? fn : fds;
 	}
+=======
+		FD_SET(fn, &set);
+		if (fds < fn) {
+			fds = fn;
+		}
+	}
+
+	//add child 5 to the set
+	FD_SET(fd, &set);
+
+>>>>>>> 17913be7bde7cf7a6006bd74e00d8e35fe0457d0
 	printf("fds = %d\n", fds);
 
 	ts start;
@@ -79,6 +116,7 @@ int main(int argc, char *argv[]) {
 	clock_gettime(CLOCK_MONOTONIC, &start);
 	now = start;
 	ts *temp;
+<<<<<<< HEAD
 	int count = 40;
 	int nfd; // = 0;
 	char *buff[2048];
@@ -118,8 +156,59 @@ int main(int argc, char *argv[]) {
 		} else if (nfd < 0) {
 			// error condition
 			perror("select()");
+=======
+	int count = 0;
+	int nfd = 0;
+	char *buff[2048];
+	char *rv;
+	// count<40 debug stop
+	while (count < 40) {
+		printf("in the while loop\n");
+		nfd = select(fds + 1, &set, NULL, NULL, &timeout);
+		printf("ndf = %d\n", nfd);
+		for (i = 0; i < 5; i++) {
+			printf("got into he loop\n");
+			if (FD_ISSET(fileno(pipe_fd[i]), &set)) {
+				printf("get to the fget");
+				rv = fgets(*buff, 2048, pipe_fd[i]);
+				if (rv == NULL) {
+					FD_CLR(fileno(pipe_fd[i]), &set);
+					fds--;	//??????
+				} else {
+					printf(" 0:%06.3f : %s\n", timespec_to_double(temp), *buff);
+				}
+			}
+			if (FD_ISSET(fd, &set)) {
+				if (child > 0) {
+
+					//close write end
+				close(fd[WRITE]);
+
+				//read message from child
+				read(fd[READ], read_msg, 128);
+			}
+>>>>>>> 17913be7bde7cf7a6006bd74e00d8e35fe0457d0
 		}
 	}
-	exit(0);
+	temp = diff(&start, &now);
+	clock_gettime(CLOCK_MONOTONIC, &now);
+
+	count++;
+}
+if (child == 0) {
+	//child 5 process
+	//close read end
+	close(fd[READ]);
+	ioctl(0, FIONREAD, &length)
+	length = read(0, buffer, length);
+	buf[length] = 0;
+	//still need way to aapendtime
+	snprintf(write_message, 128, " 0:%06.3f : %s\n", timespec_to_double(temp),
+			*buff);
+	//write message to parent
+write(fd[WRITE], write_message, strlen(write_message)+1);
+}
+
+exit(0);
 }
 
