@@ -26,10 +26,16 @@ int main(int argc, char *argv[]){
 	int childID;
 	int r;
 	int count=1;
+	int prompt = 0;
+	char buff[2048];
+
 	if (argc>1) {
 		childID = atoi(argv[1]);
 	} else {
 		exit(1);
+	}
+	if (argc==3) {
+	   prompt=1;
 	}
 
 
@@ -43,15 +49,21 @@ int main(int argc, char *argv[]){
 	now=start;
 	ts *temp;
 	while (now.tv_sec<end.tv_sec){
-		r= rand()%3;
+		if (prompt) {
+		   fprintf(stderr,"Enter a message:\n");
+		   fgets(buff,sizeof(buff),stdin);
+		} else {
+		  sprintf(buff,"Message %d",count);
+		}
+		clock_gettime(CLOCK_MONOTONIC,&now);
 		temp = diff(&start,&now);
-		fprintf(stdout," 0:%06.3f : Child %d Message %d\n",timespec_to_double(temp),childID,count);
+		fprintf(stdout," 0:%06.3f : Child %d %s\n",timespec_to_double(temp),childID,buff);
 		fflush(stdout);
 		free(temp);
 		count++;
+		r= rand()%3;
 		sleep(r);
 
-		clock_gettime(CLOCK_MONOTONIC,&now);
 	}
 	fprintf(stderr,"Child %d exiting\n",childID);
 	exit(0);
