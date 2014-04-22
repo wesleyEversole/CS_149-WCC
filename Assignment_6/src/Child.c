@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
 
 typedef struct timespec ts;
 
@@ -38,11 +39,9 @@ int main(int argc, char *argv[]){
 	   prompt=1;
 	}
 
-
 	ts start;
 	ts end;
 	ts now;
-
 
 	clock_gettime(CLOCK_MONOTONIC,&start);
 	end.tv_sec = start.tv_sec +30 ;
@@ -63,7 +62,6 @@ int main(int argc, char *argv[]){
 		count++;
 		r= rand()%3;
 		sleep(r);
-
 	}
 	fprintf(stderr,"Child %d exiting\n",childID);
 	exit(0);
