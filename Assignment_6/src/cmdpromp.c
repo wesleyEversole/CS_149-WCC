@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	if ((pipe_fd[4] = popen("./child 5 prompt", "r")) == NULL) {
-		peror("popen child 5 failed");
+		perror("popen child 5 failed");
 		exit(1);
 	}
 
@@ -78,19 +78,19 @@ int main(int argc, char *argv[]) {
 			FD_SET(fn, &set);
 			fds = (fds < fn) ? fn : fds;
 		}
-		printf("fds = %d max FD is %d\n", fds, FD_SETSIZE);
+		//printf("fds = %d max FD is %d\n", fds, FD_SETSIZE);
 
 // printf("in the while loop\n");
 		timeout.tv_sec = 1;
 		timeout.tv_usec = 0;
 		clock_gettime(CLOCK_MONOTONIC, &now);
 		temp = diff(&start, &now);
-		printf("before select %f \n", timespec_to_double(temp));
+		//printf("before select %f \n", timespec_to_double(temp));
 		nfd = select(fds + 1, &set, NULL, NULL, &timeout);
 		clock_gettime(CLOCK_MONOTONIC, &now);
 		temp = diff(&start, &now);
-		printf("after select %f \n", timespec_to_double(temp));
-		printf("ndf = %d\n", nfd);
+		//printf("after select %f \n", timespec_to_double(temp));
+		//printf("ndf = %d\n", nfd);
 		free(temp);
 		if (nfd < 0) {
 			perror("select()");
@@ -104,14 +104,14 @@ int main(int argc, char *argv[]) {
 		for (i = 0; i < 5; i++) {
 			clock_gettime(CLOCK_MONOTONIC, &now);
 			temp = diff(&start, &now);
-			printf("%d got into the loop %f \n", i, timespec_to_double(temp));
+			//printf("%d got into the loop %f \n", i, timespec_to_double(temp));
 			if (FD_ISSET(fileno(pipe_fd[i]), &set)) {
-				printf("%d got to the fget\n", i);
+				//printf("%d got to the fget\n", i);
 				rv = fgets(buff, sizeof(buff), pipe_fd[i]);
 				if (rv == NULL) {
 					FD_CLR(fileno(pipe_fd[i]), &set);
 				} else {
-					printf(" 0:%06.3f : %s\n", timespec_to_double(temp), buff);
+					fprintf(fp," 0:%06.3f : %s\n", timespec_to_double(temp), buff);
 				}
 			}
 			free(temp);
