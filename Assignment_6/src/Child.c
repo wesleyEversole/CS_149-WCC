@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 	ts now;
 
 	clock_gettime(CLOCK_MONOTONIC,&start);
-	end.tv_sec = start.tv_sec +30 ;
+	end.tv_sec = start.tv_sec + 30 ;
 	now=start;
 	ts *temp;
 	while (now.tv_sec<end.tv_sec){

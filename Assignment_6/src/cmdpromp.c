@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 	char *rv;
 // count<40 debug stop
 	while (count > 0) {
-// put all the file descriptors into a set
+		// put all the file descriptors into a set
 		FD_ZERO(&set);
 		for (i = 0; i < 5; i++) {
 			fn = fileno(pipe_fd[i]);
@@ -80,8 +80,8 @@ int main(int argc, char *argv[]) {
 		}
 		//printf("fds = %d max FD is %d\n", fds, FD_SETSIZE);
 
-// printf("in the while loop\n");
-		timeout.tv_sec = 1;
+		// printf("in the while loop\n");
+		timeout.tv_sec = 30;
 		timeout.tv_usec = 0;
 		clock_gettime(CLOCK_MONOTONIC, &now);
 		temp = diff(&start, &now);
@@ -96,7 +96,6 @@ int main(int argc, char *argv[]) {
 			perror("select()");
 			exit(1);
 		}
-
 		if (nfd == 0) {
 			count--;
 			continue;
